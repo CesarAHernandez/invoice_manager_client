@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import axios from "axios";
 import CreateInvoice from "./CreateInvoice";
-axios.defaults.baseURL = "http://localhost:3333";
 
 const Index = () => {
   const [renderChild, setRenderChild] = useState(false);
   const _handleRemove = () => {
     setRenderChild(false);
+  };
+  const _handleToast = (msg, type) => {
+    //eslint-disable-next-line no-undef
+    UIkit.notification({ message: msg, status: type });
   };
   return (
     <div>
@@ -27,7 +29,9 @@ const Index = () => {
         </button>
       </div>
       <div id="create_invoice_modal" uk-modal="true">
-        {renderChild && <CreateInvoice removeModal={_handleRemove} />}
+        {renderChild && (
+          <CreateInvoice removeModal={_handleRemove} showToast={_handleToast} />
+        )}
       </div>
     </div>
   );

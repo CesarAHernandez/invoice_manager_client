@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import CurrencyInput from "react-currency-input";
 
 const ServiceField = ({
   index,
@@ -37,13 +38,12 @@ const ServiceField = ({
       <div className="price uk-width-1-3">
         <div className="uk-inline">
           <span className="uk-form-icon">$</span>
-          <input
+          <CurrencyInput
             className="uk-input"
             id="price"
-            type="text"
-            placeholder="10.00"
+            placeholder="100.00"
             value={price}
-            onChange={e => setPrice(e.target.value)}
+            onChangeEvent={e => setPrice(e.target.value)}
           />
         </div>
       </div>

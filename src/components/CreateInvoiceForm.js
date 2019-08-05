@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import numeral from "numeral";
 import ServiceField from "./ServiceField";
+import { postRequest } from "../utils/axios";
 
-const CreateInvoiceForm = () => {
+const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   const [services, setServices] = useState([{ service: "", price: "" }]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const recepientOption = useRef(null);
+  const paymentMethod = useRef({ method: "Cash", number: null });
+  const [originalAmount, setOriginalAmount] = useState(0);
+  const user = useRef(null);
   const [isDiscounted, setIsDiscounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const discountAmount = useRef(null);
+  const daysToPay = useRef(null);
 
   useEffect(() => {
     setIsUpdating(true);
@@ -24,6 +28,7 @@ const CreateInvoiceForm = () => {
         .add(curr.price)
         .format("0.00");
     }, 0);
+    setOriginalAmount(totalAmount);
 
     if (!isDiscounted) {
       return totalAmount;
@@ -51,16 +56,28 @@ const CreateInvoiceForm = () => {
     _services[index] = updatedServiceInfo;
     setServices(_services);
   };
-  const _handleSubmit = e => {
-    e.preventDefault();
-    const object = {
-      user_id: recepientOption.current,
-      services,
-      isDiscounted,
-      discount_amount: discountAmount.current.value,
-      total_price: calculateTotal(),
-    };
-    console.log(object);
+  const _handleSubmit = async e => {
+    try {
+      handleLoading(true);
+      e.preventDefault();
+      const object = {
+        user_id: user.current,
+        services,
+        isDiscounted,
+        discount_amount: discountAmount.current.value,
+        original_price: originalAmount,
+        paymentMethod: paymentMethod.current.method,
+        methodNumber: paymentMethod.current.number,
+        days_to_pay: daysToPay.current.value,
+        total_price: calculateTotal(),
+      };
+      const result = await postRequest("/admin/invoice/create", object);
+      handleLoading(false);
+      handleCompleted(null);
+    } catch (err) {
+      console.log(err);
+      handleCompleted(err);
+    }
   };
   const renderServices = () =>
     services.map((service, index) => (
@@ -82,12 +99,12 @@ const CreateInvoiceForm = () => {
           <div className="uk-form-controls">
             <select
               className="uk-select"
-              onChange={e => (recepientOption.current = e.target.value)}
+              onChange={e => (user.current = e.target.value)}
               id="form-stacked-select"
             >
               <option value="-1">Choose a person</option>
-              <option value="0">0) Cesar Hernandez</option>
-              <option value="1">1) Alfredo Hernandez</option>
+              <option value="1">1) Cesar Hernandez</option>
+              <option value="2">2) Alfredo Hernandez</option>
             </select>
           </div>
         </div>
@@ -143,6 +160,37 @@ const CreateInvoiceForm = () => {
           />
         </div>
       </div>
+      <div className="uk-form-controls uk-padding-small uk-padding-remove-horizontal">
+        <select
+          className="uk-select"
+          onChange={e => (paymentMethod.current.method = e.target.value)}
+          id="paymentMethod"
+        >
+          <option value={0}>Choose Payment Method</option>
+          <option>Cash</option>
+          <option>PayPal</option>
+          <option>Credit Card</option>
+          <option>Check</option>
+        </select>
+
+        <div className="uk-padding-small uk-padding-remove-horizontal">
+          <label className="uk-form-label" htmlFor="days_to_pay">
+            # of Days to Pay
+          </label>
+          <input
+            className="uk-input"
+            id="days_to_pay"
+            type="number"
+            pattern="[0-9]{1-3}"
+            placeholder="1,2,3"
+            min="0"
+            max="365"
+            onClick={() => daysToPay.current.focus()}
+            ref={daysToPay}
+          />
+        </div>
+      </div>
+
       <div className="total">
         <div>
           <span>Total: </span>${totalPrice}
