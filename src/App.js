@@ -22,7 +22,7 @@ function App() {
               key={index}
               path={route.path}
               exact={route.exact}
-              component={route.component}
+              render={route.render}
             />
           ))}
         </div>

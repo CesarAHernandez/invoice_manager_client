@@ -3,23 +3,29 @@ import Index from "./components/Index";
 import Paid from "./components/Paid";
 import Pending from "./components/Pending";
 import OverDue from "./components/OverDue";
+import UserProfile from "./components/UserProfile";
+import IndexMain from "./components/IndexMain";
 
 export const routes = [
   {
     path: "/",
     exact: true,
-    component: () => <Index />,
+    render: () => <Index />,
   },
   {
     path: "/paid",
-    component: () => <Paid />,
+    render: () => <Paid />,
   },
   {
     path: "/pending",
-    component: () => <Pending />,
+    render: () => <Pending />,
   },
   {
     path: "/overdue",
-    component: () => <OverDue />,
+    render: () => <OverDue />,
+  },
+  {
+    path: "/admin/user/:id",
+    render: props => <UserProfile {...props} />,
   },
 ];
