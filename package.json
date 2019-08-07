@@ -12,9 +12,11 @@
     "react-currency-input": "^1.3.6",
     "react-dom": "^16.8.6",
     "react-new-window": "^0.1.2",
+    "react-paypal-express-checkout": "^1.0.5",
     "react-pdf": "^4.1.0",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "react-stripe-elements": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
