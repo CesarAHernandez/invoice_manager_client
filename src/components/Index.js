@@ -4,7 +4,7 @@ import { getRequest } from "../utils/axios";
 import IndexMain from "./IndexMain";
 import CreateInvoice from "./CreateInvoice";
 
-const Index = () => {
+const Index = ({ history }) => {
   const [renderChild, setRenderChild] = useState(false);
   const [users, setUsers] = useState([]);
 
@@ -43,7 +43,7 @@ const Index = () => {
           Create
         </button>
       </div>
-      <IndexMain searchedUsers={users} />
+      <IndexMain searchedUsers={users} history={history} />
 
       <div id="create_invoice_modal" uk-modal="true">
         {renderChild && (

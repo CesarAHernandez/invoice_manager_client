@@ -8,18 +8,18 @@ const SideBarMenu = () => {
       <div>
         <div className="uk-card uk-card-default uk-card-body">
           <div className="uk-flex uk-flex-column">
-            <Link to="/">
+            <Link to="/admin">
               <div className="uk-card uk-card-default uk-card-body">Home</div>
             </Link>
-            <Link to="/paid">
+            <Link to="/admin/paid">
               <div className="uk-card uk-card-default uk-card-body">Paid</div>
             </Link>
-            <Link to="/pending">
+            <Link to="/admin/pending">
               <div className="uk-card uk-card-default uk-card-body">
                 Pending
               </div>
             </Link>
-            <Link to="/overdue">
+            <Link to="/admin/overdue">
               <div className="uk-card uk-card-default uk-card-body">
                 OverDue
               </div>

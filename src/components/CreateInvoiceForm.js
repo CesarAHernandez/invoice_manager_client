@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import numeral from "numeral";
 import ServiceField from "./ServiceField";
-import { postRequest } from "../utils/axios";
+import { postRequest, getRequest } from "../utils/axios";
 
 const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   const [services, setServices] = useState([{ service: "", price: "" }]);
+  const [recepients, setRecepients] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const paymentMethod = useRef({ method: "Cash", number: null });
   const [originalAmount, setOriginalAmount] = useState(0);
@@ -22,6 +23,22 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
     setTotalPrice(calculateTotal());
   }, [services]);
 
+  useEffect(() => {
+    const getAllRecepients = async () => {
+      const result = await getRequest("/users/all");
+      result.data.users.sort((a, b) =>
+        a.username > b.username
+          ? 1
+          : a.username === b.username
+          ? a.username.length > b.username.length
+            ? 1
+            : -1
+          : -1
+      );
+      setRecepients(result.data.users);
+    };
+    getAllRecepients();
+  }, []);
   const calculateTotal = () => {
     let totalAmount = services.reduce((acc, curr) => {
       return numeral(acc)
@@ -103,8 +120,13 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
               id="form-stacked-select"
             >
               <option value="-1">Choose a person</option>
-              <option value="1">1) Cesar Hernandez</option>
-              <option value="2">2) Alfredo Hernandez</option>
+              {recepients.map((recepient, index) => {
+                return (
+                  <option key={index} value={recepient.id}>{`#${
+                    recepient.user_no
+                  } ${recepient.username}`}</option>
+                );
+              })}
             </select>
           </div>
         </div>

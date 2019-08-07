@@ -1,7 +1,11 @@
 import React from "react";
 import SideBarMenu from "./components/SideBarMenu";
 import { routes } from "./Routes";
+import { createBrowserHistory } from "history";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import "./uikit.min.css";
+const history = createBrowserHistory();
 
 const mainContainer = {
   display: "grid",
@@ -11,7 +15,7 @@ const mainContainer = {
 };
 function App() {
   return (
-    <Router>
+    <Router history={history}>
       <div style={mainContainer}>
         <div style={{ alignSelf: "center" }}>
           <SideBarMenu />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getRequest } from "../utils/axios";
 import UserCard from "./UserCard";
 
-const IndexMain = ({ searchedUsers }) => {
+const IndexMain = ({ searchedUsers, history }) => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +22,7 @@ const IndexMain = ({ searchedUsers }) => {
         uk-grid="true"
       >
         {users.map((user, index) => {
-          return <UserCard key={index} userInfo={user} />;
+          return <UserCard key={index} userInfo={user} history={history} />;
         })}
       </div>
     </div>

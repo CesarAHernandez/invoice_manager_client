@@ -8,21 +8,21 @@ import IndexMain from "./components/IndexMain";
 
 export const routes = [
   {
-    path: "/",
+    path: "/admin",
     exact: true,
-    render: () => <Index />,
+    render: props => <Index {...props} />,
   },
   {
-    path: "/paid",
-    render: () => <Paid />,
+    path: "/admin/paid",
+    render: props => <Paid {...props} />,
   },
   {
-    path: "/pending",
-    render: () => <Pending />,
+    path: "/admin/pending",
+    render: props => <Pending {...props} />,
   },
   {
-    path: "/overdue",
-    render: () => <OverDue />,
+    path: "/admin/overdue",
+    render: props => <OverDue {...props} />,
   },
   {
     path: "/admin/user/:id",
