@@ -20,15 +20,27 @@ const UserProfile = ({ match, history }) => {
     };
     fetchUserInfo();
   }, []);
-  const _sendEmail = async info => {
+  const _sendEmail = async invoice => {
     try {
       if (!userInfo.email || userInfo.email.length === 0) {
         throw new Error("This user doesn't have an email");
       }
-      await sendEmail(userInfo.email || "", "basic", {
-        name: userInfo.name,
-        body: "something",
-      });
+      await sendEmail(
+        userInfo.email || "",
+        "You invoice is ready to be viewed",
+        "basic",
+        {
+          name: userInfo.username,
+          body: `You can now view your invoice at http://localhost/user/invoice/view.
+          Invoice Number: #${invoice.inv_no}
+          Total Amount: $${invoice.total_price}
+
+          Code: ${userInfo.user_no}-${invoice.inv_no}
+
+          This is an automated email. Please do not reply to this email.
+        `,
+        }
+      );
 
       //eslint-disable-next-line no-undef
       UIkit.notification({ message: "Email Send", status: "success" });

@@ -7,4 +7,4 @@ export const sendSMS = (number, body) =>
   });
 
 export const sendEmail = (to, subject, template, templateObject) =>
-  getRequest("/user/send-email", { to, subject, template, templateObject });
+  postRequest("/user/send-email", { to, subject, template, templateObject });
