@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import numeral from "numeral";
+import Select from "react-select";
+
 import ServiceField from "./ServiceField";
 import { postRequest, getRequest } from "../utils/axios";
 
 const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   const [services, setServices] = useState([{ service: "", price: "" }]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [recepients, setRecepients] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const paymentMethod = useRef({ method: "Cash", number: null });
   const [originalAmount, setOriginalAmount] = useState(0);
-  const user = useRef(null);
   const [isDiscounted, setIsDiscounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const discountAmount = useRef(null);
@@ -35,14 +37,22 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
             : -1
           : -1
       );
-      setRecepients(result.data.users);
+      const formatedUsers = [];
+      result.data.users.forEach(user => {
+        formatedUsers.push({
+          value: user.id,
+          label: `#${user.user_no}) ${user.username}`,
+        });
+      });
+      setRecepients(formatedUsers);
     };
     getAllRecepients();
   }, []);
   const calculateTotal = () => {
     let totalAmount = services.reduce((acc, curr) => {
+      console.log(curr);
       return numeral(acc)
-        .add(curr.price)
+        .add(curr.price.replace(/,/g, ""))
         .format("0.00");
     }, 0);
     setOriginalAmount(totalAmount);
@@ -78,7 +88,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
       handleLoading(true);
       e.preventDefault();
       const object = {
-        user_id: user.current,
+        user_id: selectedUser.value,
         services,
         isDiscounted,
         discount_amount: discountAmount.current.value,
@@ -88,6 +98,8 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
         days_to_pay: daysToPay.current.value,
         total_price: calculateTotal(),
       };
+
+      console.log(selectedUser);
       const result = await postRequest("/admin/invoice/create", object);
       handleLoading(false);
       handleCompleted(null);
@@ -114,7 +126,12 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
             Recepient
           </label>
           <div className="uk-form-controls">
-            <select
+            <Select
+              value={selectedUser}
+              onChange={user => setSelectedUser(user)}
+              options={recepients}
+            />
+            {/* <select
               className="uk-select"
               onChange={e => (user.current = e.target.value)}
               id="form-stacked-select"
@@ -127,7 +144,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
                   } ${recepient.username}`}</option>
                 );
               })}
-            </select>
+            </select> */}
           </div>
         </div>
         <div className="service">

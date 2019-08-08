@@ -35,6 +35,7 @@ const Index = ({ history }) => {
             placeholder="Search..."
           />
         </form>
+        <button className="uk-button uk-button-primary">Create User</button>
         <button
           className="uk-button uk-button-primary"
           uk-toggle="target: #create_invoice_modal"

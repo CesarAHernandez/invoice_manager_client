@@ -16,6 +16,7 @@
     "react-pdf": "^4.1.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
+    "react-select": "^3.0.4",
     "react-stripe-elements": "^4.0.0"
   },
   "scripts": {

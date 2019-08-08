@@ -31,7 +31,9 @@ const UserProfile = ({ match, history }) => {
       Invoice Number: #${invoice.inv_no}
       Total Amount: $${invoice.total_price}
 
-      Link: ${invoice.download_path}
+      Code: ${userInfo.user_no}-${invoice.inv_no}
+
+      Link: http://localhost/user/invoice/view
 
       Please do not reply to this number.
       `,

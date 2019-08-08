@@ -5,12 +5,17 @@ import Pending from "./components/Pending";
 import OverDue from "./components/OverDue";
 import Home from "./components/Home";
 import UserProfile from "./components/UserProfile";
+import UserInvoice from "./components/UserInvoice";
 
 export const routes = [
   {
     path: "/",
     exact: true,
     render: props => <Home {...props} />,
+  },
+  {
+    path: "/user/invoice/view",
+    render: props => <UserInvoice {...props} />,
   },
   {
     path: "/admin",
