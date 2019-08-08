@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PdfWindow from "./PdfWindow";
 
-const InvoiceCard = ({ info, sendSMS, isLoading }) => {
+const InvoiceCard = ({ info, sendSMS, sendEmail, isLoading }) => {
   const [viewPdf, setViewPdf] = useState(false);
 
   const _handleWindowUnload = () => {
@@ -27,7 +27,11 @@ const InvoiceCard = ({ info, sendSMS, isLoading }) => {
           >
             Send Text
           </button>
-          <button className="uk-button uk-button-default" disabled={isLoading}>
+          <button
+            className="uk-button uk-button-default"
+            onClick={() => sendEmail(info)}
+            disabled={isLoading}
+          >
             Send Email
           </button>
           <button

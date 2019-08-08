@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InvoiceCard from "./InvoiceCard";
 import { getRequest } from "../utils/axios";
-import { sendSMS } from "../utils/communication";
+import { sendSMS, sendEmail } from "../utils/communication";
 import "../uikit.min.js";
 const UserProfile = ({ match, history }) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -20,6 +20,27 @@ const UserProfile = ({ match, history }) => {
     };
     fetchUserInfo();
   }, []);
+  const _sendEmail = async info => {
+    try {
+      if (!userInfo.email || userInfo.email.length === 0) {
+        throw new Error("This user doesn't have an email");
+      }
+      await sendEmail(userInfo.email || "", "basic", {
+        name: userInfo.name,
+        body: "something",
+      });
+
+      //eslint-disable-next-line no-undef
+      UIkit.notification({ message: "Email Send", status: "success" });
+    } catch (error) {
+      try {
+        //eslint-disable-next-line no-undef
+        UIkit.notification({ message: error.message, status: "warning" });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
 
   const _sendSMS = async invoice => {
     try {
@@ -74,6 +95,7 @@ const UserProfile = ({ match, history }) => {
               <InvoiceCard
                 key={index}
                 sendSMS={_sendSMS}
+                sendEmail={_sendEmail}
                 info={invoice}
                 isLoading={loading}
               />
