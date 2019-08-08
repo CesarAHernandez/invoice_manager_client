@@ -3,9 +3,11 @@ import { debounce } from "../utils/helper";
 import { getRequest } from "../utils/axios";
 import IndexMain from "./IndexMain";
 import CreateInvoice from "./CreateInvoice";
+import CreateUser from "./CreateUser";
 
 const Index = ({ history }) => {
-  const [renderChild, setRenderChild] = useState(false);
+  const [renderInvoice, setRenderInvoice] = useState(false);
+  const [createUser, setCreateUser] = useState(false);
   const [users, setUsers] = useState([]);
 
   const _handleSearch = debounce(async term => {
@@ -17,8 +19,12 @@ const Index = ({ history }) => {
     console.log(results);
     setUsers(results.data.users);
   }, 300);
-  const _handleRemove = () => {
-    setRenderChild(false);
+  const _handleRemove = which => {
+    if (which === "invoice") {
+      setRenderInvoice(false);
+    } else {
+      setCreateUser(false);
+    }
   };
   const _handleToast = (msg, type) => {
     //eslint-disable-next-line no-undef
@@ -35,11 +41,17 @@ const Index = ({ history }) => {
             placeholder="Search..."
           />
         </form>
-        <button className="uk-button uk-button-primary">Create User</button>
+        <button
+          className="uk-button uk-button-primary"
+          uk-toggle="target: #create_user_modal"
+          onClick={() => setCreateUser(true)}
+        >
+          Create User
+        </button>
         <button
           className="uk-button uk-button-primary"
           uk-toggle="target: #create_invoice_modal"
-          onClick={() => setRenderChild(true)}
+          onClick={() => setRenderInvoice(true)}
         >
           Create
         </button>
@@ -47,8 +59,13 @@ const Index = ({ history }) => {
       <IndexMain searchedUsers={users} history={history} />
 
       <div id="create_invoice_modal" uk-modal="true">
-        {renderChild && (
+        {renderInvoice && (
           <CreateInvoice removeModal={_handleRemove} showToast={_handleToast} />
+        )}
+      </div>
+      <div id="create_user_modal" uk-modal="true">
+        {createUser && (
+          <CreateUser removeModal={_handleRemove} showToast={_handleToast} />
         )}
       </div>
     </div>

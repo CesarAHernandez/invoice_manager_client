@@ -24,7 +24,7 @@ const CreateInvoice = ({ removeModal, showToast }) => {
           className="uk-button uk-modal-close uk-position-top-right"
           id="modal-close-btn"
           type="button"
-          onClick={removeModal}
+          onClick={() => removeModal("invoice")}
           uk-close="true"
         />
         <h2 className="uk-modal-title">Create a new Invoice</h2>

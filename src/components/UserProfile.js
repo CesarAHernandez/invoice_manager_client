@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InvoiceCard from "./InvoiceCard";
-import { getRequest, postRequest } from "../utils/axios";
+import { getRequest } from "../utils/axios";
+import { sendSMS } from "../utils/communication";
 import "../uikit.min.js";
 const UserProfile = ({ match, history }) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -22,10 +23,9 @@ const UserProfile = ({ match, history }) => {
 
   const _sendSMS = async invoice => {
     try {
+      console.log(invoice);
       setLoading(true);
-      await postRequest("/sms/send", {
-        number: userInfo.phone,
-        body: `
+      const body = `
       Hello ${userInfo.username},
       Your invoice is ready to be viewed
       Invoice Number: #${invoice.inv_no}
@@ -35,10 +35,9 @@ const UserProfile = ({ match, history }) => {
 
       Link: http://localhost/user/invoice/view
 
-      Please do not reply to this number.
-      `,
-      });
+      Please do not reply to this number.`;
 
+      await sendSMS(userInfo.phone, body);
       //eslint-disable-next-line no-undef
       UIkit.notification({ message: "Text message sent", status: "success" });
     } catch (err) {

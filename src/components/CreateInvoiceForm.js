@@ -26,6 +26,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   }, [services]);
 
   useEffect(() => {
+    handleLoading(true);
     const getAllRecepients = async () => {
       const result = await getRequest("/users/all");
       result.data.users.sort((a, b) =>
@@ -44,6 +45,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
           label: `#${user.user_no}) ${user.username}`,
         });
       });
+      handleLoading(false);
       setRecepients(formatedUsers);
     };
     getAllRecepients();
@@ -131,20 +133,6 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
               onChange={user => setSelectedUser(user)}
               options={recepients}
             />
-            {/* <select
-              className="uk-select"
-              onChange={e => (user.current = e.target.value)}
-              id="form-stacked-select"
-            >
-              <option value="-1">Choose a person</option>
-              {recepients.map((recepient, index) => {
-                return (
-                  <option key={index} value={recepient.id}>{`#${
-                    recepient.user_no
-                  } ${recepient.username}`}</option>
-                );
-              })}
-            </select> */}
           </div>
         </div>
         <div className="service">
