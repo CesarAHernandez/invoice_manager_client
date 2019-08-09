@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useRef } from "react";
+import { postRequest } from "../utils/axios";
 
 const CreateUser = ({ removeModal, showToast }) => {
-  const _handleSubmit = e => {
-    e.preventDefault();
+  const username = useRef(null);
+  const email = useRef(null);
+  const phone = useRef(null);
+  const _handleSubmit = async e => {
+    try {
+      e.preventDefault();
+      await postRequest("/user/create", {
+        username: username.current.value,
+        email: email.current.value,
+        phone: phone.current.value,
+      });
+
+      document.getElementById("modal-close-btn").click();
+    } catch (err) {
+      console.log(err);
+      showToast(err, "warning");
+    }
   };
   return (
     <div className="uk-modal-dialog uk-modal-body uk-padding-small">
@@ -24,6 +40,8 @@ const CreateUser = ({ removeModal, showToast }) => {
                 className="uk-input"
                 id="username"
                 type="text"
+                ref={username}
+                onClick={() => username.current.focus()}
                 placeholder="Name"
               />
             </div>
@@ -36,6 +54,8 @@ const CreateUser = ({ removeModal, showToast }) => {
                 id="email"
                 type="text"
                 placeholder="email"
+                ref={email}
+                onClick={() => email.current.focus()}
               />
             </div>
             <div className="input">
@@ -47,6 +67,8 @@ const CreateUser = ({ removeModal, showToast }) => {
                 id="phone"
                 type="text"
                 placeholder="phone"
+                ref={phone}
+                onClick={() => phone.current.focus()}
               />
             </div>
           </div>

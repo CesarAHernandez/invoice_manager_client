@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import CreatableSelect from "react-select/creatable";
 import CurrencyInput from "react-currency-input";
 
 const ServiceField = ({
@@ -12,8 +13,25 @@ const ServiceField = ({
 
   useEffect(() => {
     updateServiceInfo(service, price, index);
+    console.log(service, price);
   }, [price, service]);
 
+  const handleChange = (newValue, actionMeta) => {
+    console.group("Value Changed");
+    console.log(newValue);
+    setService(newValue.label);
+    console.log(`action: ${actionMeta.action}`);
+    console.groupEnd();
+  };
+  const handleInputChange = (newValue, actionMeta) => {
+    console.group("input Changed");
+    console.log(newValue);
+    if (newValue.length > 0) {
+      setService(newValue);
+    }
+    console.log(`action: ${actionMeta.action}`);
+    console.groupEnd();
+  };
   return (
     <div className="uk-flex uk-flex-between uk-padding-small uk-padding-remove-top uk-padding-remove-horizontal">
       <div
@@ -27,12 +45,18 @@ const ServiceField = ({
         />
       </div>
       <div className="service_description uk-width-1-1 uk-padding-small uk-padding-remove-vertical uk-padding-remove-left">
-        <input
-          className="uk-input"
-          type="text"
-          placeholder="Tax return"
-          value={service}
-          onChange={e => setService(e.target.value)}
+        <CreatableSelect
+          isClearable={true}
+          defaultInputValue={serviceInfo.service}
+          options={[{ label: "Test", value: "test1" }]}
+          onInputChange={(newValue, actionMeta) =>
+            newValue && newValue.length > 0 && setService(newValue)
+          }
+          onChange={(newValue, actionMeta) =>
+            newValue && setService(newValue.label)
+          }
+          // onChange={handleChange}
+          // onInputChange={handleInputChange}
         />
       </div>
       <div className="price uk-width-1-3">

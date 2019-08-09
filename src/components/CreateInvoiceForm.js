@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import numeral from "numeral";
 import Select from "react-select";
+import CurrencyInput from "react-currency-input";
 
 import ServiceField from "./ServiceField";
 import { postRequest, getRequest } from "../utils/axios";
-
+// TODO: Replace payment methed with amount due and amount piad
 const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
-  const [services, setServices] = useState([{ service: "", price: "" }]);
+  const [services, setServices] = useState([
+    { service: "", price: "", qty: 1 },
+  ]);
+  const [pricePaid, setPricePaid] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [recepients, setRecepients] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -22,7 +26,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
     setTimeout(() => {
       setIsUpdating(false);
     }, 1);
-    setTotalPrice(calculateTotal());
+    setTotalPrice(calculateTotal()[1]);
   }, [services]);
 
   useEffect(() => {
@@ -52,20 +56,20 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   }, []);
   const calculateTotal = () => {
     let totalAmount = services.reduce((acc, curr) => {
-      console.log(curr);
       return numeral(acc)
         .add(curr.price.replace(/,/g, ""))
         .format("0.00");
     }, 0);
-    setOriginalAmount(totalAmount);
+    const originalAmount = totalAmount;
 
     if (!isDiscounted) {
-      return totalAmount;
+      return [originalAmount, totalAmount];
     }
     const discount = `${100 - discountAmount.current.value}%`;
-    return numeral(discount)
+    totalAmount = numeral(discount)
       .multiply(totalAmount)
       .format("0.00");
+    return [originalAmount, totalAmount];
   };
   const _removeService = indxRemove => {
     const filteredServices = services.filter((service, index) => {
@@ -80,6 +84,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
     const updatedServiceInfo = {
       service,
       price,
+      qty: 1,
     };
     const _services = services;
     _services[index] = updatedServiceInfo;
@@ -89,24 +94,30 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
     try {
       handleLoading(true);
       e.preventDefault();
+      const [subTotal, totalPrice] = calculateTotal();
       const object = {
         user_id: selectedUser.value,
         services,
         isDiscounted,
+        ammount_paid: pricePaid || numeral(0).format(0.0),
+        ammount_due: numeral(totalPrice)
+          .subtract(pricePaid || 0)
+          .format("0.00"),
         discount_amount: discountAmount.current.value,
-        original_price: originalAmount,
-        paymentMethod: paymentMethod.current.method,
-        methodNumber: paymentMethod.current.number,
+        original_price: subTotal,
+        // paymentMethod: paymentMethod.current.method,
+        // methodNumber: paymentMethod.current.number,
         days_to_pay: daysToPay.current.value,
-        total_price: calculateTotal(),
+        total_price: totalPrice,
       };
 
-      console.log(selectedUser);
+      console.log(object);
       const result = await postRequest("/admin/invoice/create", object);
       handleLoading(false);
       handleCompleted(null);
     } catch (err) {
       console.log(err);
+      handleCompleted(false);
       handleCompleted(err);
     }
   };
@@ -146,7 +157,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
           <div className="add_service uk-width-1-1">
             <span
               onClick={() => {
-                setServices([...services, { service: "", price: "" }]);
+                setServices([...services, { service: "", price: "", qty: 1 }]);
               }}
               className="uk-align-right"
               style={{ color: "green", cursor: "pointer" }}
@@ -187,20 +198,23 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
           />
         </div>
       </div>
-      <div className="uk-form-controls uk-padding-small uk-padding-remove-horizontal">
-        <select
-          className="uk-select"
-          onChange={e => (paymentMethod.current.method = e.target.value)}
-          id="paymentMethod"
-        >
-          <option value={0}>Choose Payment Method</option>
-          <option>Cash</option>
-          <option>PayPal</option>
-          <option>Credit Card</option>
-          <option>Check</option>
-        </select>
-
-        <div className="uk-padding-small uk-padding-remove-horizontal">
+      <div className="uk-form-controls uk-child-width-1-2" uk-grid="true">
+        <div className="price-paid">
+          <label className="uk-form-label" htmlFor="price-paid">
+            Price Paid
+          </label>
+          <div className="uk-inline">
+            <span className="uk-form-icon">$</span>
+            <CurrencyInput
+              className="uk-input"
+              id="price-paid"
+              placeholder="100.00"
+              value={pricePaid}
+              onChangeEvent={e => setPricePaid(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="days-to-pay">
           <label className="uk-form-label" htmlFor="days_to_pay">
             # of Days to Pay
           </label>
@@ -226,7 +240,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
       <button
         className="uk-button uk-button-secondary"
         type="submit"
-        disabled={services.length <= 0}
+        disabled={services.length <= 0 || selectedUser === null}
       >
         Submit
       </button>
