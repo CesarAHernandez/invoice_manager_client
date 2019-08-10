@@ -1,17 +1,28 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import PhoneInput from "react-phone-number-input/basic-input";
+import CurrencyInput from "react-currency-input";
 import { postRequest } from "../utils/axios";
 
 const CreateUser = ({ removeModal, showToast }) => {
+  const [phone, setPhone] = useState(null);
   const username = useRef(null);
   const email = useRef(null);
-  const phone = useRef(null);
+  const street_address = useRef(null);
+  const city = useRef(null);
+  const state = useRef(null);
+  const [zip, setZip] = useState(0);
+
   const _handleSubmit = async e => {
     try {
       e.preventDefault();
       await postRequest("/user/create", {
         username: username.current.value,
         email: email.current.value,
-        phone: phone.current.value,
+        phone,
+        street_address: street_address.current.value,
+        city: city.current.value,
+        state: state.current.value,
+        zip,
       });
 
       document.getElementById("modal-close-btn").click();
@@ -34,7 +45,7 @@ const CreateUser = ({ removeModal, showToast }) => {
           <div className="uk-margin uk-child-width-1-2" uk-grid="true">
             <div className="input">
               <label className="uk-form-label" htmlFor="username">
-                Name
+                Name (First Last)
               </label>
               <input
                 className="uk-input"
@@ -62,13 +73,67 @@ const CreateUser = ({ removeModal, showToast }) => {
               <label className="uk-form-label" htmlFor="phone">
                 Phone
               </label>
+              <PhoneInput
+                className="uk-input"
+                country="US"
+                value={phone || ""}
+                onChange={value => setPhone(value)}
+              />
+            </div>
+            <div className="input">
+              <label className="uk-form-label" htmlFor="street_address">
+                Street Address
+              </label>
               <input
                 className="uk-input"
-                id="phone"
+                id="street_address"
                 type="text"
-                placeholder="phone"
-                ref={phone}
-                onClick={() => phone.current.focus()}
+                placeholder="Street Addres"
+                ref={street_address}
+                onClick={() => street_address.current.focus()}
+              />
+            </div>
+            <div className="input">
+              <label className="uk-form-label" htmlFor="state">
+                State
+              </label>
+              <input
+                className="uk-input"
+                id="state"
+                type="text"
+                placeholder="State"
+                ref={state}
+                onClick={() => state.current.focus()}
+              />
+            </div>
+            <div className="input">
+              <label className="uk-form-label" htmlFor="city">
+                City
+              </label>
+              <input
+                className="uk-input"
+                id="city"
+                type="text"
+                placeholder="city"
+                ref={city}
+                onClick={() => city.current.focus()}
+              />
+            </div>
+            <div className="input">
+              <label className="uk-form-label" htmlFor="zip">
+                Zipcode
+              </label>
+              <CurrencyInput
+                className="uk-input"
+                id="zip"
+                type="text"
+                precision={0}
+                decimalSeparator=""
+                thousandSeparator=""
+                suffix=""
+                value={zip}
+                onChangeEvent={(e, value, floatValue) => setZip(floatValue)}
+                placeholder="90242"
               />
             </div>
           </div>

@@ -6,9 +6,13 @@ const OverDue = ({ history }) => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const allUsers = await getRequest("/users/status/overdue");
-      console.log(allUsers);
-      setUsers(allUsers.data.users);
+      try {
+        const allUsers = await getRequest("/users/status/overdue");
+        console.log(allUsers);
+        setUsers(allUsers.data.users);
+      } catch (err) {
+        console.log(err);
+      }
     };
     fetchData();
   }, []);

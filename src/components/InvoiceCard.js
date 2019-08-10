@@ -16,7 +16,9 @@ const InvoiceCard = ({ info, sendSMS, sendEmail, isLoading }) => {
         <div className="uk-width-1-2">
           <div className="uk-title">Number: {info.inv_no}</div>
           <div className="uk-title">Status: {info.status}</div>
-          <div className="uk-title">Method: {"Cash"}</div>
+          <div className="uk-title">
+            Due Date: {new Date(info.due_date).toLocaleDateString()}
+          </div>
           <div className="uk-title">Amount: ${info.total_price}</div>
         </div>
         <div className="uk-width-1-2 uk-child-width-1-1 uk-height-1-1">

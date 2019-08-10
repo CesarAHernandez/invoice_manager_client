@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import CurrencyInput from "react-currency-input";
+// TODO: Figure this out
+// require("../uikit-icons.min.js");
+// require("../uikit.min.js");
 
 const ServiceField = ({
   index,
   serviceInfo,
   removeService,
+  updateTotal,
   updateServiceInfo,
 }) => {
   const [price, setPrice] = useState(serviceInfo.price);
@@ -13,7 +17,7 @@ const ServiceField = ({
 
   useEffect(() => {
     updateServiceInfo(service, price, index);
-    console.log(service, price);
+    console.log(updateTotal());
   }, [price, service]);
 
   const handleChange = (newValue, actionMeta) => {

@@ -10,17 +10,19 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   const [services, setServices] = useState([
     { service: "", price: "", qty: 1 },
   ]);
-  const [pricePaid, setPricePaid] = useState(null);
+  const [pricePaid, setPricePaid] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [recepients, setRecepients] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const paymentMethod = useRef({ method: "Cash", number: null });
   const [originalAmount, setOriginalAmount] = useState(0);
   const [isDiscounted, setIsDiscounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const discountAmount = useRef(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
   const daysToPay = useRef(null);
 
+  useEffect(() => {
+    calculateTotal();
+  }, [discountAmount, pricePaid]);
   useEffect(() => {
     setIsUpdating(true);
     setTimeout(() => {
@@ -55,21 +57,41 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
     getAllRecepients();
   }, []);
   const calculateTotal = () => {
-    let totalAmount = services.reduce((acc, curr) => {
-      return numeral(acc)
-        .add(curr.price.replace(/,/g, ""))
-        .format("0.00");
-    }, 0);
-    const originalAmount = totalAmount;
+    try {
+      let totalAmount = services.reduce((acc, curr) => {
+        return numeral(acc)
+          .add(curr.price.replace(/,/g, ""))
+          .format("0.00");
+      }, 0);
+      const originalAmount = totalAmount;
 
-    if (!isDiscounted) {
+      if (!isDiscounted) {
+        // totalAmount = numeral(totalAmount)
+        //   .subtract(pricePaid)
+        //   .format("0.00");
+        // This will show the amount due
+        setTotalPrice(
+          numeral(totalAmount)
+            .subtract(pricePaid)
+            .format("0.00")
+        );
+        return [originalAmount, totalAmount];
+      }
+      const discount = `${100 - discountAmount}%`;
+      totalAmount = numeral(discount)
+        .multiply(totalAmount)
+        .format("0.00");
+      // This will show the amount due
+      setTotalPrice(
+        numeral(totalAmount)
+          .subtract(pricePaid)
+          .format("0.00")
+      );
       return [originalAmount, totalAmount];
+    } catch (err) {
+      console.log(err);
+      return [0, 0];
     }
-    const discount = `${100 - discountAmount.current.value}%`;
-    totalAmount = numeral(discount)
-      .multiply(totalAmount)
-      .format("0.00");
-    return [originalAmount, totalAmount];
   };
   const _removeService = indxRemove => {
     const filteredServices = services.filter((service, index) => {
@@ -103,10 +125,8 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
         ammount_due: numeral(totalPrice)
           .subtract(pricePaid || 0)
           .format("0.00"),
-        discount_amount: discountAmount.current.value,
+        discount_amount: discountAmount,
         original_price: subTotal,
-        // paymentMethod: paymentMethod.current.method,
-        // methodNumber: paymentMethod.current.number,
         days_to_pay: daysToPay.current.value,
         total_price: totalPrice,
       };
@@ -126,6 +146,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
       <ServiceField
         key={index}
         index={index}
+        updateTotal={calculateTotal}
         serviceInfo={service}
         updateServiceInfo={_updateServiceInfo}
         removeService={_removeService}
@@ -184,17 +205,20 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
           <label className="uk-form-label" htmlFor="discount_amount">
             Discount Amount
           </label>
-          <input
+          <CurrencyInput
             className="uk-input"
             id="discount_amount"
-            type="number"
-            pattern="[0-9]{1-3}"
+            type="text"
+            precision={0}
+            decimalSeparator=""
+            thousandSeparator=""
+            suffix="%"
+            value={discountAmount}
+            onChangeEvent={(e, value, floatValue) =>
+              setDiscountAmount(floatValue)
+            }
             placeholder="10,20,30..."
-            min="0"
-            max="100"
             disabled={!isDiscounted}
-            onClick={() => discountAmount.current.focus()}
-            ref={discountAmount}
           />
         </div>
       </div>
@@ -222,6 +246,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
             className="uk-input"
             id="days_to_pay"
             type="number"
+            defaultValue={1}
             pattern="[0-9]{1-3}"
             placeholder="1,2,3"
             min="0"

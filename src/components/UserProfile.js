@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import InvoiceCard from "./InvoiceCard";
 import { getRequest } from "../utils/axios";
 import { sendSMS, sendEmail } from "../utils/communication";
-import "../uikit.min.js";
+import * as UIkit from "../uikit.min.js";
+
 const UserProfile = ({ match, history }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ const UserProfile = ({ match, history }) => {
       );
 
       //eslint-disable-next-line no-undef
-      UIkit.notification({ message: "Email Send", status: "success" });
+      UIkit.notification({ message: "Email Sent", status: "success" });
     } catch (error) {
       try {
         //eslint-disable-next-line no-undef
@@ -88,15 +89,20 @@ const UserProfile = ({ match, history }) => {
     return (
       <div>
         <div
-          className="uk-card uk-card-default uk-card-body uk-child-width-1-3"
+          className="uk-card uk-card-default uk-card-body uk-child-width-1-4"
           uk-grid="true"
         >
           <div className="uk-card-title">Number</div>
           <div className="uk-card-title">Name</div>
           <div className="uk-card-title">Phone</div>
+          <div className="uk-card-title">Address</div>
           <div className="uk-text-top">{userInfo.user_no}</div>
           <div className="uk-text-top">{userInfo.username}</div>
           <div className="uk-text-top">{userInfo.phone}</div>
+          <div className="uk-text-top">
+            {userInfo.street_address} <br /> {userInfo.city}, {userInfo.state}{" "}
+            {userInfo.zip}
+          </div>
         </div>
         <div
           className="uk-margin uk-child-width-1-2@m uk-child-width-1-1@s uk-child-width-1-3@xl"

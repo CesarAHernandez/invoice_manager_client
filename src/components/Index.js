@@ -5,6 +5,7 @@ import IndexMain from "./IndexMain";
 import CreateInvoice from "./CreateInvoice";
 import CreateUser from "./CreateUser";
 
+import * as UIkit from "../uikit.min.js";
 const Index = ({ history }) => {
   const [renderInvoice, setRenderInvoice] = useState(false);
   const [createUser, setCreateUser] = useState(false);
