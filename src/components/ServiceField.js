@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import CurrencyInput from "react-currency-input";
+import { services } from "../config/services";
 // TODO: Figure this out
 // require("../uikit-icons.min.js");
 // require("../uikit.min.js");
@@ -17,24 +18,11 @@ const ServiceField = ({
 
   useEffect(() => {
     updateServiceInfo(service, price, index);
-    console.log(updateTotal());
   }, [price, service]);
 
-  const handleChange = (newValue, actionMeta) => {
-    console.group("Value Changed");
-    console.log(newValue);
-    setService(newValue.label);
-    console.log(`action: ${actionMeta.action}`);
-    console.groupEnd();
-  };
-  const handleInputChange = (newValue, actionMeta) => {
-    console.group("input Changed");
-    console.log(newValue);
-    if (newValue.length > 0) {
-      setService(newValue);
-    }
-    console.log(`action: ${actionMeta.action}`);
-    console.groupEnd();
+  const updateOption = value => {
+    setService(value.label);
+    setPrice(value.value);
   };
   return (
     <div className="uk-flex uk-flex-between uk-padding-small uk-padding-remove-top uk-padding-remove-horizontal">
@@ -52,12 +40,12 @@ const ServiceField = ({
         <CreatableSelect
           isClearable={true}
           defaultInputValue={serviceInfo.service}
-          options={[{ label: "Test", value: "test1" }]}
+          options={services}
           onInputChange={(newValue, actionMeta) =>
             newValue && newValue.length > 0 && setService(newValue)
           }
           onChange={(newValue, actionMeta) =>
-            newValue && setService(newValue.label)
+            newValue && updateOption(newValue)
           }
           // onChange={handleChange}
           // onInputChange={handleInputChange}

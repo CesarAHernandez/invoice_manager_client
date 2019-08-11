@@ -1,72 +1,74 @@
-import React, { useState } from "react";
-import PaypalButton from "./PaypalButton";
-import { StripeProvider, Elements } from "react-stripe-elements";
-import StripeForm from "./StripeForm";
+import React, { useState, useContext, useRef } from "react";
+import { postRequest } from "../utils/axios";
+import UserContext from "./UserContext";
 
-const Home = () => {
-  // TODO: Make request to server to see if this person needs to pay
-  const [complete, setComplete] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+const Home = ({ history }) => {
+  const userContext = useContext(UserContext);
+  const [error, setError] = useState(null);
+  const email = useRef(null);
+  const password = useRef(null);
+  const _handleFormSubmit = async e => {
+    try {
+      e.preventDefault();
 
-  const _handleComplete = isCompleted => {
-    setComplete(isCompleted);
-    // Make request to server to note that this payment is complete
-  };
-  const _handleLoading = isLoading => {
-    setIsLoading(isLoading);
+      const response = await postRequest("/user/login", {
+        email: email.current.value,
+        password: password.current.value,
+      });
+      console.log(response);
+      switch (response.status) {
+        case 200:
+          userContext.handleLogin(response.data.user, history);
+
+          break;
+
+        case 204:
+          setError("User does not exist");
+          break;
+        case 401:
+          setError("Invalid password");
+
+          break;
+        default:
+          setError("Invalid password");
+          break;
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
   };
   return (
-    <div className="uk-container uk-padding-large">
-      <div className="uk-card uk-card-default uk-card-body uk-width-1-1">
-        <h1 className="uk-heading-small uk-text-center">Pay Here</h1>
-        <div className="uk-child-width-1-2" uk-grid="true">
-          <div>
-            <div>Invoice# 75du0e1</div>
-            <div>Total: $100.00</div>
-            <button className="uk-button uk-button-primary">
-              Download Invoice
-            </button>
+    <div className="uk-container  uk-padding">
+      {error && (
+        <div className="uk-text-danger uk-flex uk-flex-center">{error}</div>
+      )}
+
+      <div className="uk-flex uk-flex-center">
+        <form className="uk-form-stacked" onSubmit={_handleFormSubmit}>
+          <div className="uk-width-1-1 uk-margin">
+            <label className="uk-label">Email</label>
+            <input
+              className="uk-input"
+              placeholder="email"
+              type="text"
+              ref={email}
+              onClick={() => email.current.focus()}
+            />
           </div>
-          <div className="payment">
-            {isLoading && (
-              <div className="uk-overlay-default uk-position-cover">
-                <div className="uk-position-center">
-                  <div uk-spinner="ratio: 3" />
-                </div>
-              </div>
-            )}
-            {complete ? (
-              <div className="uk-text-center uk-text-success">
-                Payment complete
-              </div>
-            ) : (
-              <div>
-                <div className="uk-card-title uk-text-center">Payment</div>
-                <div className="uk-text-center">
-                  <div>Continue with Paypal</div>
-                  <PaypalButton
-                    total={100.0}
-                    description={"Some thing"}
-                    complete={_handleComplete}
-                    loading={_handleLoading}
-                  />
-                </div>
-                <hr className="uk-divider-icon" />
-                <div>Credit Card</div>
-                <StripeProvider apiKey="pk_test_FakM84nEUfKPZFFI8dAEDfyf00WqcOJr8E">
-                  <Elements>
-                    <StripeForm
-                      total={100.0}
-                      description={"something"}
-                      complete={_handleComplete}
-                      loading={_handleLoading}
-                    />
-                  </Elements>
-                </StripeProvider>
-              </div>
-            )}
+          <div className="uk-width-1-1 uk-margin">
+            <label className="uk-label">Password</label>
+            <input
+              className="uk-input"
+              placeholder="password"
+              type="password"
+              ref={password}
+              onClick={() => password.current.focus()}
+            />
           </div>
-        </div>
+          <button className="uk-button uk-button-primary" type="submit">
+            Submit
+          </button>
+        </form>
       </div>
     </div>
   );

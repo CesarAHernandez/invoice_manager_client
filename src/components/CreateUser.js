@@ -1,21 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
+import UserContext from "./UserContext";
 import PhoneInput from "react-phone-number-input/basic-input";
 import CurrencyInput from "react-currency-input";
 import { postRequest } from "../utils/axios";
 
 const CreateUser = ({ removeModal, showToast }) => {
+  const userContext = useContext(UserContext);
   const [phone, setPhone] = useState(null);
+  const [loading, setLoading] = useState(false);
   const username = useRef(null);
   const email = useRef(null);
   const street_address = useRef(null);
   const city = useRef(null);
   const state = useRef(null);
   const [zip, setZip] = useState(0);
+  const isAdmin = useRef(null);
+  const adminLevel = useRef(null);
+  const password = useRef(null);
 
   const _handleSubmit = async e => {
+    setLoading(true);
     try {
       e.preventDefault();
-      await postRequest("/user/create", {
+      const response = await postRequest("/user/create", {
         username: username.current.value,
         email: email.current.value,
         phone,
@@ -23,13 +30,21 @@ const CreateUser = ({ removeModal, showToast }) => {
         city: city.current.value,
         state: state.current.value,
         zip,
+        admin_level: isAdmin ? adminLevel.current.value : 0,
+        password: password.current.value,
       });
 
-      document.getElementById("modal-close-btn").click();
+      if (response.status === 200) {
+        document.getElementById("modal-close-btn").click();
+        showToast("User Was Added", "success");
+        return;
+      }
+      showToast("Somethnig went wrong Adding User", "Warning");
     } catch (err) {
       console.log(err);
       showToast(err, "warning");
     }
+    setLoading(false);
   };
   return (
     <div className="uk-modal-dialog uk-modal-body uk-padding-small">
@@ -53,7 +68,7 @@ const CreateUser = ({ removeModal, showToast }) => {
                 type="text"
                 ref={username}
                 onClick={() => username.current.focus()}
-                placeholder="Name"
+                placeholder="First and Last Name"
               />
             </div>
             <div className="input">
@@ -136,12 +151,67 @@ const CreateUser = ({ removeModal, showToast }) => {
                 placeholder="90242"
               />
             </div>
+
+            {userContext.user.admin_level > 1 && (
+              <div className="input">
+                <button
+                  className="uk-button uk-button-default"
+                  uk-toggle="target: #admin-inputs"
+                  type="button"
+                >
+                  For Adimn?
+                </button>
+                <div id="admin-inputs" hidden={true}>
+                  <label className="uk-form-label" htmlFor="admin">
+                    Is Admin
+                  </label>
+                  <input
+                    className="uk-checkbox"
+                    ref={isAdmin}
+                    onClick={() => isAdmin.current.focus()}
+                    id="admin"
+                    type="checkbox"
+                  />
+                  <label className="uk-form-label" htmlFor="admin-level">
+                    Admin Level
+                  </label>
+                  <input
+                    className="uk-input"
+                    id="admin-level"
+                    min={1}
+                    max={3}
+                    ref={adminLevel}
+                    onClick={() => adminLevel.current.focus()}
+                    type="number"
+                  />
+                  <label className="uk-form-label" htmlFor="password">
+                    Password
+                  </label>
+                  <input
+                    className="uk-input"
+                    id="password"
+                    ref={password}
+                    onClick={() => password.current.focus()}
+                    type="password"
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <button className="uk-button uk-button-secondary" type="submit">
             Submit
           </button>
         </div>
       </form>
+      <div>
+        {loading && (
+          <div className="uk-overlay-default uk-position-cover">
+            <div className="uk-position-center">
+              <div uk-spinner="ratio: 3" />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

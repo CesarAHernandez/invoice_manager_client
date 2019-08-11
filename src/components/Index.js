@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
+import UserContext from "./UserContext";
 import { debounce } from "../utils/helper";
 import { getRequest } from "../utils/axios";
 import IndexMain from "./IndexMain";
@@ -7,6 +8,7 @@ import CreateUser from "./CreateUser";
 
 import * as UIkit from "../uikit.min.js";
 const Index = ({ history }) => {
+  const userContext = useContext(UserContext);
   const [renderInvoice, setRenderInvoice] = useState(false);
   const [createUser, setCreateUser] = useState(false);
   const [users, setUsers] = useState([]);
@@ -54,7 +56,13 @@ const Index = ({ history }) => {
           uk-toggle="target: #create_invoice_modal"
           onClick={() => setRenderInvoice(true)}
         >
-          Create
+          Create Invoice
+        </button>
+        <button
+          className="uk-button uk-button-danger"
+          onClick={() => userContext.handleLogout(history)}
+        >
+          Log Out
         </button>
       </div>
       <IndexMain searchedUsers={users} history={history} />
