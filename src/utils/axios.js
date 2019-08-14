@@ -12,3 +12,9 @@ export const postRequest = (route, data) =>
     .post(route, data)
     .then(result => result)
     .catch(e => e);
+
+export const putRequest = (route, data) =>
+  axios
+    .put(route, data)
+    .then(result => result)
+    .catch(e => e);

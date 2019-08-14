@@ -1,14 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import UserContext from "./UserContext";
 import InvoiceCard from "./InvoiceCard";
+import EditUser from "./EditUser";
 import { getRequest, postRequest } from "../utils/axios";
 import { sendSMS, sendEmail } from "../utils/communication";
 import * as UIkit from "../uikit.min.js";
 
 const UserProfile = ({ match, history }) => {
   const userContext = useContext(UserContext);
+  const [updated, setUpdated] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showEditUser, setShowEditUser] = useState(false);
+
   const [invoices, setInvoices] = useState([]);
 
   useEffect(() => {
@@ -16,23 +20,20 @@ const UserProfile = ({ match, history }) => {
       try {
         const request = await getRequest(`user/${match.params.id}/invoice`);
         // TODO: If the user is an admin then show them what invoice that person has done
+        let invoices;
         if (userContext.user.admin_level > 1) {
-          const invoices = await postRequest(
-            "/admin/invoice/preparer/invoices",
-            {
-              id: request.data.user.id,
-            }
-          );
-          console.log(invoices);
+          invoices = await postRequest("/admin/invoice/preparer/invoices", {
+            id: request.data.user.id,
+          });
         }
         setUserInfo(request.data.user);
-        setInvoices(request.data.invoices);
+        setInvoices([...request.data.invoices, ...invoices.data.invoices]);
       } catch (err) {
         history.push("/404");
       }
     };
     fetchUserInfo();
-  }, []);
+  }, [updated]);
 
   const _sendEmail = async invoice => {
     try {
@@ -98,6 +99,13 @@ const UserProfile = ({ match, history }) => {
 
     setLoading(false);
   };
+  const _handleRemove = () => {
+    setShowEditUser(false);
+    setUpdated(updated + 1);
+  };
+  const _handleToast = (msg, type) => {
+    UIkit.notification({ message: msg, status: type });
+  };
   if (userInfo) {
     return (
       <div>
@@ -118,7 +126,16 @@ const UserProfile = ({ match, history }) => {
               {userInfo.street_address} <br /> {userInfo.city}, {userInfo.state}{" "}
               {userInfo.zip}
             </div>
-            <div className="uk-card-top">{userInfo.admin_level}</div>
+            <div>
+              <div className="uk-text-top">{userInfo.admin_level}</div>
+              <button
+                className="uk-text-top uk-button uk-button-default"
+                uk-toggle="target: #show_edit_user"
+                onClick={() => setShowEditUser(true)}
+              >
+                Edit
+              </button>
+            </div>
           </div>
         ) : (
           <div
@@ -148,11 +165,21 @@ const UserProfile = ({ match, history }) => {
                 key={index}
                 sendSMS={_sendSMS}
                 sendEmail={_sendEmail}
+                viewByAdmin={true}
                 info={invoice}
                 isLoading={loading}
               />
             );
           })}
+        </div>
+        <div id="show_edit_user" uk-modal="true">
+          {showEditUser && (
+            <EditUser
+              userInfo={userInfo}
+              removeModal={_handleRemove}
+              showToast={_handleToast}
+            />
+          )}
         </div>
       </div>
     );

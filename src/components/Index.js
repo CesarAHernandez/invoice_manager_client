@@ -7,6 +7,7 @@ import CreateInvoice from "./CreateInvoice";
 import CreateUser from "./CreateUser";
 
 import * as UIkit from "../uikit.min.js";
+
 const Index = ({ history }) => {
   const userContext = useContext(UserContext);
   const [renderInvoice, setRenderInvoice] = useState(false);

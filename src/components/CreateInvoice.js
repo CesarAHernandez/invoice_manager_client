@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CreateInvoiceForm from "./CreateInvoiceForm";
 
 const CreateInvoice = ({ removeModal, showToast }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    return () => removeModal("user");
+  });
+
   const _handleLoading = state => {
     setLoading(state);
   };
