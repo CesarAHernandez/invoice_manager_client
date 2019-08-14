@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import UserContext from "./UserContext";
 import numeral from "numeral";
 import Select from "react-select";
 import CurrencyInput from "react-currency-input";
@@ -7,6 +8,7 @@ import ServiceField from "./ServiceField";
 import { postRequest, getRequest } from "../utils/axios";
 // TODO: Replace payment methed with amount due and amount piad
 const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
+  const userContext = useContext(UserContext);
   const [services, setServices] = useState([
     { service: "", price: "", qty: 1 },
   ]);
@@ -111,15 +113,26 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
     const _services = services;
     _services[index] = updatedServiceInfo;
     setServices(_services);
+    calculateTotal();
   };
   const _handleSubmit = async e => {
     try {
       handleLoading(true);
       e.preventDefault();
       const [subTotal, totalPrice] = calculateTotal();
+
+      const updatedServices = [];
+      services.forEach(service => {
+        service.totalPrice = numeral(service.price)
+          .multiply(service.qty)
+          .format("0.00");
+        updatedServices.push(service);
+      });
+      console.log(updatedServices);
+
       const object = {
         user_id: selectedUser.value,
-        services,
+        services: updatedServices,
         isDiscounted,
         ammount_paid: pricePaid || numeral(0).format(0.0),
         ammount_due: numeral(totalPrice)
@@ -129,6 +142,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
         original_price: subTotal,
         days_to_pay: daysToPay.current.value,
         total_price: totalPrice,
+        preparer: userContext.user.id,
       };
 
       console.log(object);

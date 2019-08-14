@@ -17,6 +17,7 @@ const ServiceField = ({
   const [service, setService] = useState(serviceInfo.service);
 
   useEffect(() => {
+    console.log(price);
     updateServiceInfo(service, price, index);
   }, [price, service]);
 

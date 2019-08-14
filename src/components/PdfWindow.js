@@ -3,7 +3,7 @@ import NewWindow from "react-new-window";
 
 const PdfWindow = ({ path, onUnload }) => (
   <NewWindow
-    url="http://www.africau.edu/images/default/sample.pdf"
+    url={path}
     // url={path}
     onOpen={() => {
       console.log(path);

@@ -1,8 +1,10 @@
-import React from "react";
-
+import React, { useContext } from "react";
+import UserContext from "./UserContext";
 import { Link } from "react-router-dom";
 
 const SideBarMenu = () => {
+  const userContext = useContext(UserContext);
+
   return (
     <div className="uk-child-width-expand@s" uk-grid="true">
       <div>
@@ -24,6 +26,13 @@ const SideBarMenu = () => {
                 OverDue
               </div>
             </Link>
+            {userContext.user.admin_level > 1 && (
+              <Link to="/admin/admins">
+                <div className="uk-card uk-card-default uk-card-body">
+                  Admins
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import UserContext from "./UserContext";
 import InvoiceCard from "./InvoiceCard";
-import { getRequest } from "../utils/axios";
+import { getRequest, postRequest } from "../utils/axios";
 import { sendSMS, sendEmail } from "../utils/communication";
 import * as UIkit from "../uikit.min.js";
 
 const UserProfile = ({ match, history }) => {
+  const userContext = useContext(UserContext);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [invoices, setInvoices] = useState([]);
@@ -13,6 +15,16 @@ const UserProfile = ({ match, history }) => {
     const fetchUserInfo = async () => {
       try {
         const request = await getRequest(`user/${match.params.id}/invoice`);
+        // TODO: If the user is an admin then show them what invoice that person has done
+        if (userContext.user.admin_level > 1) {
+          const invoices = await postRequest(
+            "/admin/invoice/preparer/invoices",
+            {
+              id: request.data.user.id,
+            }
+          );
+          console.log(invoices);
+        }
         setUserInfo(request.data.user);
         setInvoices(request.data.invoices);
       } catch (err) {
@@ -21,6 +33,7 @@ const UserProfile = ({ match, history }) => {
     };
     fetchUserInfo();
   }, []);
+
   const _sendEmail = async invoice => {
     try {
       if (!userInfo.email || userInfo.email.length === 0) {
@@ -88,22 +101,43 @@ const UserProfile = ({ match, history }) => {
   if (userInfo) {
     return (
       <div>
-        <div
-          className="uk-card uk-card-default uk-card-body uk-child-width-1-4"
-          uk-grid="true"
-        >
-          <div className="uk-card-title">Number</div>
-          <div className="uk-card-title">Name</div>
-          <div className="uk-card-title">Phone</div>
-          <div className="uk-card-title">Address</div>
-          <div className="uk-text-top">{userInfo.user_no}</div>
-          <div className="uk-text-top">{userInfo.username}</div>
-          <div className="uk-text-top">{userInfo.phone}</div>
-          <div className="uk-text-top">
-            {userInfo.street_address} <br /> {userInfo.city}, {userInfo.state}{" "}
-            {userInfo.zip}
+        {userContext.user.admin_level > 1 ? (
+          <div
+            className="uk-card uk-card-default uk-card-body uk-child-width-1-5"
+            uk-grid="true"
+          >
+            <div className="uk-card-title">Number</div>
+            <div className="uk-card-title">Name</div>
+            <div className="uk-card-title">Phone</div>
+            <div className="uk-card-title">Address</div>
+            <div className="uk-card-title">Admin Level</div>
+            <div className="uk-text-top">{userInfo.user_no}</div>
+            <div className="uk-text-top">{userInfo.username}</div>
+            <div className="uk-text-top">{userInfo.phone}</div>
+            <div className="uk-text-top">
+              {userInfo.street_address} <br /> {userInfo.city}, {userInfo.state}{" "}
+              {userInfo.zip}
+            </div>
+            <div className="uk-card-top">{userInfo.admin_level}</div>
           </div>
-        </div>
+        ) : (
+          <div
+            className="uk-card uk-card-default uk-card-body uk-child-width-1-4"
+            uk-grid="true"
+          >
+            <div className="uk-card-title">Number</div>
+            <div className="uk-card-title">Name</div>
+            <div className="uk-card-title">Phone</div>
+            <div className="uk-card-title">Address</div>
+            <div className="uk-text-top">{userInfo.user_no}</div>
+            <div className="uk-text-top">{userInfo.username}</div>
+            <div className="uk-text-top">{userInfo.phone}</div>
+            <div className="uk-text-top">
+              {userInfo.street_address} <br /> {userInfo.city}, {userInfo.state}{" "}
+              {userInfo.zip}
+            </div>
+          </div>
+        )}
         <div
           className="uk-margin uk-child-width-1-2@m uk-child-width-1-1@s uk-child-width-1-3@xl"
           uk-grid="true"

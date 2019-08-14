@@ -62,7 +62,7 @@ const Index = ({ history }) => {
           className="uk-button uk-button-danger"
           onClick={() => userContext.handleLogout(history)}
         >
-          Log Out
+          Log Out {userContext.user.username}
         </button>
       </div>
       <IndexMain searchedUsers={users} history={history} />

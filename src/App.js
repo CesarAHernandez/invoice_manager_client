@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { jwtConfig } from "./config/jwt";
+import { sign, verify } from "jsonwebtoken";
 import { UserProvider } from "./components/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { routes } from "./Routes";
@@ -9,15 +11,31 @@ import "./uikit.min.css";
 const history = createBrowserHistory();
 
 function App() {
-  const [user, setUser] = useState({ user: {}, loggedIn: false });
+  let savedInfo;
+  try {
+    savedInfo = verify(localStorage.getItem("user_state"), jwtConfig.secret);
+  } catch (err) {
+    console.log(err);
+    savedInfo = { user: {}, loggedIn: false };
+  }
+
+  const [user, setUser] = useState(savedInfo || { user: {}, loggedIn: false });
   const userContext = {
     ...user,
     handleLogin: (user, history) => {
       setUser({ user, loggedIn: true });
+      localStorage.setItem(
+        "user_state",
+        sign({ user, loggedIn: true }, jwtConfig.secret)
+      );
       history.push("/admin");
     },
     handleLogout: history => {
       setUser({ user: {}, loggedIn: false });
+      localStorage.setItem(
+        "user_state",
+        sign({ user: {}, loggedIn: false }, jwtConfig.secret)
+      );
       history.push("/");
     },
   };

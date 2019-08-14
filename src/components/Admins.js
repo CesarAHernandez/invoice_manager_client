@@ -1,30 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { getRequest } from "../utils/axios";
 import UserCard from "./UserCard";
+import { getRequest } from "../utils/axios";
 
-const IndexMain = ({ searchedUsers, history }) => {
+const Admins = ({ history }) => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const allUsers = await getRequest("/users/all");
-
-        const filteredUsers = allUsers.data.users.filter(user => {
-          if (user.admin_level === 0) {
-            return user;
-          }
-        });
-        setUsers(filteredUsers);
+        const allUsers = await getRequest("/users/status/admins");
+        console.log(allUsers);
+        setUsers(allUsers.data.users);
       } catch (err) {
         console.log(err);
       }
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    setUsers(searchedUsers);
-  }, [searchedUsers]);
   return (
     <div className="uk-panel-scrollable uk-margin" style={{ height: 700 }}>
       <div
@@ -39,4 +30,4 @@ const IndexMain = ({ searchedUsers, history }) => {
   );
 };
 
-export default IndexMain;
+export default Admins;

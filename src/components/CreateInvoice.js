@@ -13,7 +13,9 @@ const CreateInvoice = ({ removeModal, showToast }) => {
       return;
     }
 
-    document.getElementById("modal-close-btn").click();
+    setTimeout(() => {
+      document.getElementById("modal-close-btn").click();
+    }, 100);
     showToast("Successfully created a new Invoice", "success");
   };
   return (

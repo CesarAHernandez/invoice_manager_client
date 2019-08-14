@@ -28,6 +28,8 @@ const UserPayment = ({ invoice, user, goBack }) => {
     getStatus();
   }, []);
 
+  const _handleDownload = () => {};
+
   const _handleComplete = async isCompleted => {
     try {
       if (isCompleted) {
@@ -59,7 +61,10 @@ const UserPayment = ({ invoice, user, goBack }) => {
           <div>
             <div>Invoice# {invoice.inv_no}</div>
             <div>Total: ${total}</div>
-            <button className="uk-button uk-button-primary">
+            <button
+              onClick={_handleDownload}
+              className="uk-button uk-button-primary"
+            >
               Download Invoice
             </button>
           </div>
