@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PdfWindow from "./PdfWindow";
 
 const InvoiceCard = ({ info, sendSMS, sendEmail, isLoading, viewByAdmin }) => {
   const [viewPdf, setViewPdf] = useState(false);
+
+  useEffect(() => {}, []);
 
   const _handleWindowUnload = () => {
     setViewPdf(false);
@@ -11,7 +13,11 @@ const InvoiceCard = ({ info, sendSMS, sendEmail, isLoading, viewByAdmin }) => {
     <div>
       <div
         className="uk-card uk-card-default uk-card-body uk-card-hover"
-        style={{ borderWidth: 1, borderColor: "red", borderStyle: "solid" }}
+        style={{
+          borderWidth: viewByAdmin ? 1 : 0,
+          borderColor: "red",
+          borderStyle: "solid"
+        }}
         uk-grid="true"
       >
         <div className="uk-width-1-2">

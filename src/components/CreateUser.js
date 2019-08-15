@@ -35,7 +35,7 @@ const CreateUser = ({ removeModal, showToast }) => {
         state: state.current.value,
         zip,
         admin_level: isAdmin ? adminLevel.current.value : 0,
-        password: password.current.value,
+        password: password.current.value
       });
 
       if (response.status === 200) {
@@ -47,7 +47,7 @@ const CreateUser = ({ removeModal, showToast }) => {
       console.log(err);
       showToast(err, "warning");
     }
-    setInterval(() => {
+    setTimeout(() => {
       setLoading(false);
       document.getElementById("modal-close-btn").click();
     }, 300);

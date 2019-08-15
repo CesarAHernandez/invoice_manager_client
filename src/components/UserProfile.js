@@ -20,16 +20,21 @@ const UserProfile = ({ match, history }) => {
       try {
         const request = await getRequest(`user/${match.params.id}/invoice`);
         // TODO: If the user is an admin then show them what invoice that person has done
-        let invoices;
+        let invoices = [];
         if (userContext.user.admin_level > 1) {
-          invoices = await postRequest("/admin/invoice/preparer/invoices", {
-            id: request.data.user.id,
-          });
+          const response = await postRequest(
+            "/admin/invoice/preparer/invoices",
+            {
+              id: request.data.user.id
+            }
+          );
+          invoices = response.data.invoices;
         }
+        console.log(request.data.user);
         setUserInfo(request.data.user);
-        setInvoices([...request.data.invoices, ...invoices.data.invoices]);
+        setInvoices([...request.data.invoices, ...invoices]);
       } catch (err) {
-        history.push("/404");
+        console.log(err);
       }
     };
     fetchUserInfo();
@@ -53,7 +58,7 @@ const UserProfile = ({ match, history }) => {
           Code: ${userInfo.user_no}-${invoice.inv_no}
 
           This is an automated email. Please do not reply to this email.
-        `,
+        `
         }
       );
 
@@ -165,7 +170,9 @@ const UserProfile = ({ match, history }) => {
                 key={index}
                 sendSMS={_sendSMS}
                 sendEmail={_sendEmail}
-                viewByAdmin={true}
+                viewByAdmin={
+                  parseInt(invoice.preparer) === parseInt(userInfo.id)
+                }
                 info={invoice}
                 isLoading={loading}
               />
