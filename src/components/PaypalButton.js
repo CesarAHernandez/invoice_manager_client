@@ -5,10 +5,8 @@ import PaypalExpressBtn from "react-paypal-express-checkout";
 const PaypalButton = ({ total, description, loading, complete }) => {
   // Get the env from a config file
   const client = {
-    sandbox:
-      "AaS_2PhWgwbVUdKDs2oqi3CfNSetug__6oZ0dVnKIIMg1OmlRpliVZwNXG9Gn-MEE4u256oyMgbU7RYE",
-    production:
-      "EDgQ2Q8KRSjAjiz2hWDPKMZfveVguGg_k0WDd1femHEwNbvOBN-8xp1bJ7S2b-7oCd5dd3SmGuWc111X",
+    sandbox: "",
+    production: ""
   };
   const env = "sandbox";
   const currency = "USD";
