@@ -1,5 +1,5 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3333";
+axios.defaults.baseURL = "https://invoicemanager-rem.herokuapp.com/";
 
 export const getRequest = route =>
   axios
