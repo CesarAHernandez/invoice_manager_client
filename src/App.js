@@ -23,6 +23,7 @@ function App() {
   const userContext = {
     ...user,
     handleLogin: (user, history) => {
+      console.log(user);
       setUser({ user, loggedIn: true });
       localStorage.setItem(
         "user_state",

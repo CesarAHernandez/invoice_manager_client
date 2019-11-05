@@ -25,14 +25,17 @@ const UserProfile = ({ match, history }) => {
           const response = await postRequest(
             "/admin/invoice/preparer/invoices",
             {
-              id: request.data.user.id
+              id: request.data.user.id,
             }
           );
           invoices = response.data.invoices;
         }
-        console.log(request.data.user);
-        setUserInfo(request.data.user);
-        setInvoices([...request.data.invoices, ...invoices]);
+        console.log(request);
+        setUserInfo(request.data.user[0]);
+        setInvoices([
+          ...(request.data.user[0].invoices || []),
+          ...(invoices || []),
+        ]);
       } catch (err) {
         console.log(err);
       }
@@ -58,7 +61,7 @@ const UserProfile = ({ match, history }) => {
           Code: ${userInfo.user_no}-${invoice.inv_no}
 
           This is an automated email. Please do not reply to this email.
-        `
+        `,
         }
       );
 
@@ -76,7 +79,6 @@ const UserProfile = ({ match, history }) => {
 
   const _sendSMS = async invoice => {
     try {
-      console.log(invoice);
       setLoading(true);
       const body = `
       Hello ${userInfo.username},
@@ -90,7 +92,9 @@ const UserProfile = ({ match, history }) => {
 
       Please do not reply to this number.`;
 
-      await sendSMS(userInfo.phone, body);
+      console.log(userContext.user.phone);
+      //TODO: Phone needs to be changed to userInfo.phone for production
+      await sendSMS(userContext.user.phone, body);
       //eslint-disable-next-line no-undef
       UIkit.notification({ message: "Text message sent", status: "success" });
     } catch (err) {
