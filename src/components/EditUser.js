@@ -14,6 +14,7 @@ const EditUser = ({ userInfo, removeModal, showToast }) => {
   const street_address = useRef(null);
   const city = useRef(null);
   const state = useRef(null);
+  const password = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -29,7 +30,7 @@ const EditUser = ({ userInfo, removeModal, showToast }) => {
         id: userInfo.id,
         username: username.current.value,
         phone,
-
+        password: password.current.value,
         email: email.current.value,
         street_address: street_address.current.value,
         city: city.current.value,
@@ -38,12 +39,14 @@ const EditUser = ({ userInfo, removeModal, showToast }) => {
         admin_level: admin_level.current.value,
       };
       const response = await putRequest("/user/edit", userObject);
+      console.log(response);
       if (response.status === 200) {
         showToast("User successfully Edited", "success");
       } else {
         showToast("User not edited", "warning");
       }
     } catch (err) {
+      console.log(err);
       showToast("User not edited", "warning");
     }
     setTimeout(() => {
@@ -174,6 +177,18 @@ const EditUser = ({ userInfo, removeModal, showToast }) => {
                 ref={admin_level}
                 onClick={() => admin_level.current.focus()}
                 type="number"
+              />
+            </div>
+            <div className="input">
+              <label className="uk-form-label" htmlFor="password">
+                Password
+              </label>
+              <input
+                className="uk-input"
+                id="password"
+                ref={password}
+                onClick={() => password.current.focus()}
+                type="password"
               />
             </div>
           </div>

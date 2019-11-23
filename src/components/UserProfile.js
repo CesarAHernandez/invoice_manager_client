@@ -19,23 +19,19 @@ const UserProfile = ({ match, history }) => {
     const fetchUserInfo = async () => {
       try {
         const request = await getRequest(`user/${match.params.id}/invoice`);
-        // TODO: If the user is an admin then show them what invoice that person has done
+        const requestInfo = request.data.user[0];
         let invoices = [];
         if (userContext.user.admin_level > 1) {
           const response = await postRequest(
             "/admin/invoice/preparer/invoices",
             {
-              id: request.data.user.id,
+              id: requestInfo.id,
             }
           );
           invoices = response.data.invoices;
         }
-        console.log(request);
-        setUserInfo(request.data.user[0]);
-        setInvoices([
-          ...(request.data.user[0].invoices || []),
-          ...(invoices || []),
-        ]);
+        setUserInfo(requestInfo);
+        setInvoices([...(requestInfo.invoices || []), ...(invoices || [])]);
       } catch (err) {
         console.log(err);
       }
@@ -116,8 +112,6 @@ const UserProfile = ({ match, history }) => {
   const _handleDeleteInvoice = async id => {
     //eslint-disable-next-line no-restricted-globals
     if (confirm("Are you sure you want to delete")) {
-      console.log(id);
-      console.log("We want to delete this invoice");
       try {
         await deleteRequest(`admin/invoice/${id}/delete`);
         UIkit.notification({
@@ -191,13 +185,14 @@ const UserProfile = ({ match, history }) => {
           uk-grid="true"
         >
           {invoices.map((invoice, index) => {
+            console.log(invoice.preparer, userInfo);
             return (
               <InvoiceCard
                 key={index}
                 sendSMS={_sendSMS}
                 sendEmail={_sendEmail}
                 viewByAdmin={
-                  parseInt(invoice.preparer) === parseInt(userInfo.id)
+                  parseInt(invoice.preparer.id) === parseInt(userInfo.id)
                 }
                 deleteInvoice={_handleDeleteInvoice}
                 info={invoice}

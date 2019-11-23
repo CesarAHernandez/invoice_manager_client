@@ -18,10 +18,14 @@ const CreateInvoice = ({ removeModal, showToast }) => {
       return;
     }
 
-    setTimeout(() => {
-      document.getElementById("modal-close-btn").click();
-    }, 100);
-    showToast("Successfully created a new Invoice", "success");
+    try {
+      setTimeout(() => {
+        document.getElementById("modal-close-btn").click();
+      }, 100);
+      showToast("Successfully created a new Invoice", "success");
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <div className="uk-modal-dialog uk-modal-body uk-padding-small">
