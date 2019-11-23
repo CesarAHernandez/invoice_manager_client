@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import UserContext from "./UserContext";
 import { debounce } from "../utils/helper";
 import { getRequest } from "../utils/axios";
@@ -63,6 +64,10 @@ const Index = ({ history }) => {
         >
           Log Out {userContext.user.username}
         </button>
+        <Link to="/admin/settings">
+          <i uk-icon="icon: cog"></i>
+          Settings
+        </Link>
       </div>
       <IndexMain searchedUsers={users} history={history} />
 

@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Admins from "./components/Admins";
 import UserProfile from "./components/UserProfile";
 import UserInvoice from "./components/UserInvoice";
+import SettingsPage from "./components/SettingsPage";
 
 export const routes = [
   {
@@ -17,6 +18,12 @@ export const routes = [
   {
     path: "/user/invoice/view",
     render: props => <UserInvoice {...props} />,
+  },
+  {
+    path: "/admin/settings",
+    exact: true,
+    protected: true,
+    render: props => <SettingsPage {...props} />,
   },
   {
     path: "/admin",
