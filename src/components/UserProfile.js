@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import UserContext from "./UserContext";
 import InvoiceCard from "./InvoiceCard";
 import EditUser from "./EditUser";
-import { getRequest, postRequest } from "../utils/axios";
+import { getRequest, postRequest, deleteRequest } from "../utils/axios";
 import { sendSMS, sendEmail } from "../utils/communication";
-import * as UIkit from "../uikit.min.js";
+import * as UIkit from "../resources/js/uikit.min.js";
 
 const UserProfile = ({ match, history }) => {
   const userContext = useContext(UserContext);
@@ -67,10 +67,11 @@ const UserProfile = ({ match, history }) => {
 
       //eslint-disable-next-line no-undef
       UIkit.notification({ message: "Email Sent", status: "success" });
+      // UIkit.notification({ message: "Email Sent", status: "success" });
     } catch (error) {
       try {
         //eslint-disable-next-line no-undef
-        UIkit.notification({ message: error.message, status: "warning" });
+        // UIkit.notification({ message: error.message, status: "warning" });
       } catch (err) {
         console.log(err);
       }
@@ -111,6 +112,27 @@ const UserProfile = ({ match, history }) => {
   const _handleRemove = () => {
     setShowEditUser(false);
     setUpdated(updated + 1);
+  };
+  const _handleDeleteInvoice = async id => {
+    //eslint-disable-next-line no-restricted-globals
+    if (confirm("Are you sure you want to delete")) {
+      console.log(id);
+      console.log("We want to delete this invoice");
+      try {
+        await deleteRequest(`admin/invoice/${id}/delete`);
+        UIkit.notification({
+          message: "Invoice successfully deleted",
+          status: "success",
+        });
+        setUpdated(updated + 1);
+      } catch (err) {
+        console.log(err);
+        UIkit.notification({
+          message: "Error deleting invoice",
+          status: "warning",
+        });
+      }
+    }
   };
   const _handleToast = (msg, type) => {
     UIkit.notification({ message: msg, status: type });
@@ -177,6 +199,7 @@ const UserProfile = ({ match, history }) => {
                 viewByAdmin={
                   parseInt(invoice.preparer) === parseInt(userInfo.id)
                 }
+                deleteInvoice={_handleDeleteInvoice}
                 info={invoice}
                 isLoading={loading}
               />

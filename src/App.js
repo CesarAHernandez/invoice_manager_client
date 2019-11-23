@@ -7,7 +7,6 @@ import { routes } from "./Routes";
 import { createBrowserHistory } from "history";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import "./uikit.min.css";
 const history = createBrowserHistory();
 
 function App() {

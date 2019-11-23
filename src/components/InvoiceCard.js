@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PdfWindow from "./PdfWindow";
 
-const InvoiceCard = ({ info, sendSMS, sendEmail, isLoading, viewByAdmin }) => {
+const InvoiceCard = ({
+  info,
+  sendSMS,
+  sendEmail,
+  isLoading,
+  viewByAdmin,
+  deleteInvoice,
+}) => {
   const [viewPdf, setViewPdf] = useState(false);
-
-  useEffect(() => {}, []);
 
   const _handleWindowUnload = () => {
     setViewPdf(false);
@@ -16,7 +21,7 @@ const InvoiceCard = ({ info, sendSMS, sendEmail, isLoading, viewByAdmin }) => {
         style={{
           borderWidth: viewByAdmin ? 1 : 0,
           borderColor: "red",
-          borderStyle: "solid"
+          borderStyle: "solid",
         }}
         uk-grid="true"
       >
@@ -52,7 +57,7 @@ const InvoiceCard = ({ info, sendSMS, sendEmail, isLoading, viewByAdmin }) => {
           </button>
           <button
             className="uk-button uk-button-danger"
-            onClick={() => alert("Are you sure you want to delete")}
+            onClick={() => deleteInvoice(info.id)}
             disabled={isLoading}
           >
             Delete

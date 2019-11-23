@@ -8,7 +8,6 @@ const Home = ({ history }) => {
   const [loading, setLoading] = useState(false);
   const email = useRef(null);
   const password = useRef(null);
-  const phone = useRef(null);
 
   const _handleFormSubmit = async e => {
     try {
@@ -21,7 +20,6 @@ const Home = ({ history }) => {
       });
       switch (response.status) {
         case 200:
-          response.data.user.phone = phone.current.value;
           userContext.handleLogin(response.data.user, history);
           setLoading(false);
           break;
@@ -48,16 +46,8 @@ const Home = ({ history }) => {
       {error && (
         <div className="uk-text-danger uk-flex uk-flex-center">{error}</div>
       )}
-      <div className="uk-flex uk-flex-column uk-flex-center uk-padding">
-        <div>
-          email: admin@gmail.com<br></br>
-          password: admin
-        </div>
-        <div>
-          Note* The phone number is not required, but if you want to see text
-          message integration please use a phone number.<br></br> Follow the
-          pattern:+1[phonenumber]
-        </div>
+      <div className="uk-flex uk-flex-center uk-padding">
+        <h1>R.E.M Invoice Manager</h1>
       </div>
 
       <div className="uk-flex uk-flex-center">
@@ -80,16 +70,6 @@ const Home = ({ history }) => {
               type="password"
               ref={password}
               onClick={() => password.current.focus()}
-            />
-          </div>
-          <div className="uk-width-1-1 uk-margin">
-            <label className="uk-label">Phone Number</label>
-            <input
-              className="uk-input"
-              placeholder="+15629390904"
-              type="text"
-              ref={phone}
-              onClick={() => phone.current.focus()}
             />
           </div>
           <button

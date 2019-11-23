@@ -1,5 +1,6 @@
 import axios from "axios";
-axios.defaults.baseURL = "https://invoicemanager-rem.herokuapp.com/";
+axios.defaults.baseURL = "http://127.0.0.1:3333";
+// axios.defaults.baseURL = "https://invoicemanager-rem.herokuapp.com/";
 
 export const getRequest = route =>
   axios
@@ -13,6 +14,11 @@ export const postRequest = (route, data) =>
     .then(result => result)
     .catch(e => e);
 
+export const deleteRequest = route =>
+  axios
+    .delete(route)
+    .then(result => result)
+    .catch(e => e);
 export const putRequest = (route, data) =>
   axios
     .put(route, data)

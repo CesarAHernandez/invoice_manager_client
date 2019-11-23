@@ -6,6 +6,7 @@ import CurrencyInput from "react-currency-input";
 
 import ServiceField from "./ServiceField";
 import { postRequest, getRequest } from "../utils/axios";
+
 // TODO: Replace payment methed with amount due and amount piad
 const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   const userContext = useContext(UserContext);
@@ -191,11 +192,11 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
           <div>{isUpdating ? "Loading" : renderServices()}</div>
           <div className="add_service uk-width-1-1">
             <span
+              className="uk-align-right"
+              style={{ color: "green", cursor: "pointer" }}
               onClick={() => {
                 setServices([...services, { service: "", price: "", qty: 1 }]);
               }}
-              className="uk-align-right"
-              style={{ color: "green", cursor: "pointer" }}
               uk-icon="icon:plus-circle; ratio: 1.2"
             />
           </div>
