@@ -1,18 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { getRequest } from "../utils/axios";
+import { getRequest, postRequest } from "../utils/axios";
 
 const SetingsPage = () => {
   const [SMTPEmail, setSMTPEmail] = useState();
   const [twilioPhone, setTwilioPhone] = useState();
+  const [loading, setLoading] = useState(true);
+
+  const fetchOptions = async () => {
+    const request = await getRequest("/option/all");
+    const settings = request.data.settingResponse;
+    setSMTPEmail(settings.SMTPEmail);
+    setTwilioPhone(settings.twilioPhone);
+    setLoading(false);
+  };
   useEffect(() => {
-    const fetchOptions = async () => {
-      const request = await getRequest("/option/all");
-      const settings = request.data.settingResponse;
-      setSMTPEmail(settings.SMTPEmail);
-      setTwilioPhone(settings.twilioPhone);
-    };
     fetchOptions();
   }, []);
+
+  const _handleSubmit = async () => {
+    setLoading(true);
+    // Getting the information from the values and send them over a post request
+    const options = [
+      {
+        option: "SMTPEmail",
+        value: SMTPEmail,
+      },
+      {
+        option: "twilioPhone",
+        value: twilioPhone,
+      },
+    ];
+    try {
+      const request = await postRequest("/option/update", options);
+      // Slow it down
+      setTimeout(() => {
+        setLoading(false);
+        fetchOptions();
+      }, 1000);
+    } catch (err) {
+      console.log(err);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  };
 
   return (
     <div>
@@ -45,6 +76,13 @@ const SetingsPage = () => {
             placeholder="test@gmail.com"
           />
         </div>
+        <button
+          className="uk-button uk-button-primary"
+          onClick={_handleSubmit}
+          disabled={loading}
+        >
+          {loading ? <div uk-spinner="true"></div> : "Save"}
+        </button>
       </div>
     </div>
   );
