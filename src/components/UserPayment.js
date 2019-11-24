@@ -28,6 +28,7 @@ const UserPayment = ({ invoice, user, goBack }) => {
     getStatus();
   }, []);
 
+  // TODO: User can download their invoice
   const _handleDownload = () => {};
 
   const _handleComplete = async isCompleted => {
@@ -85,16 +86,16 @@ const UserPayment = ({ invoice, user, goBack }) => {
                 <div className="uk-card-title uk-text-center">Payment</div>
                 <div className="uk-text-center">
                   <div>Continue with Paypal</div>
-                  <PaypalButton
+                  {/* <PaypalButton
                     total={total}
                     description={"Some thing"}
                     complete={_handleComplete}
                     loading={_handleLoading}
-                  />
+                  /> */}
                 </div>
                 <hr className="uk-divider-icon" />
                 <div>Credit Card</div>
-                <StripeProvider apiKey="pk_test_FakM84nEUfKPZFFI8dAEDfyf00WqcOJr8E">
+                {/* <StripeProvider apiKey="pk_test_FakM84nEUfKPZFFI8dAEDfyf00WqcOJr8E">
                   <Elements>
                     <StripeForm
                       total={total}
@@ -103,7 +104,7 @@ const UserPayment = ({ invoice, user, goBack }) => {
                       loading={_handleLoading}
                     />
                   </Elements>
-                </StripeProvider>
+                </StripeProvider> */}
               </div>
             )}
           </div>

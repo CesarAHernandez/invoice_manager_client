@@ -6,8 +6,8 @@ const CreateInvoice = ({ removeModal, showToast }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    return () => removeModal("user");
-  });
+    return () => removeModal("invoice");
+  }, []);
 
   const _handleLoading = state => {
     setLoading(state);

@@ -4,6 +4,7 @@ import InvoiceCard from "./InvoiceCard";
 import EditUser from "./EditUser";
 import { getRequest, postRequest, deleteRequest } from "../utils/axios";
 import { sendSMS, sendEmail } from "../utils/communication";
+import { siteOptions } from "../config/siteOptions";
 import * as UIkit from "../resources/js/uikit.min.js";
 
 const UserProfile = ({ match, history }) => {
@@ -21,7 +22,7 @@ const UserProfile = ({ match, history }) => {
         const request = await getRequest(`user/${match.params.id}/invoice`);
         const requestInfo = request.data.user[0];
         let invoices = [];
-        if (userContext.user.admin_level > 1) {
+        if (userContext.user.admin_level > 1 && requestInfo.admin_level > 1) {
           const response = await postRequest(
             "/admin/invoice/preparer/invoices",
             {
@@ -30,6 +31,7 @@ const UserProfile = ({ match, history }) => {
           );
           invoices = response.data.invoices;
         }
+        console.log(requestInfo);
         setUserInfo(requestInfo);
         setInvoices([...(requestInfo.invoices || []), ...(invoices || [])]);
       } catch (err) {
@@ -44,17 +46,18 @@ const UserProfile = ({ match, history }) => {
       if (!userInfo.email || userInfo.email.length === 0) {
         throw new Error("This user doesn't have an email");
       }
+      console.log(invoice);
       await sendEmail(
         userInfo.email || "",
         "You invoice is ready to be viewed",
         "basic",
         {
           name: userInfo.username,
-          body: `You can now view your invoice at http://localhost/user/invoice/view.
+          body: `You can now view your invoice at ${siteOptions.url}/user/invoice/view.
           Invoice Number: #${invoice.inv_no}
           Total Amount: $${invoice.total_price}
 
-          Code: ${userInfo.user_no}-${invoice.inv_no}
+          Code: ${invoice.user.user_no}-${invoice.inv_no}
 
           This is an automated email. Please do not reply to this email.
         `,
@@ -83,15 +86,13 @@ const UserProfile = ({ match, history }) => {
       Invoice Number: #${invoice.inv_no}
       Total Amount: $${invoice.total_price}
 
-      Code: ${userInfo.user_no}-${invoice.inv_no}
+      Code: ${invoice.user.user_no}-${invoice.inv_no}
 
-      Link: http://localhost/user/invoice/view
+      Link: ${siteOptions.url}/user/invoice/view
 
       Please do not reply to this number.`;
 
-      console.log(userContext.user.phone);
-      //TODO: Phone needs to be changed to userInfo.phone for production
-      await sendSMS(userContext.user.phone, body);
+      await sendSMS(userInfo.phone, body);
       //eslint-disable-next-line no-undef
       UIkit.notification({ message: "Text message sent", status: "success" });
     } catch (err) {
@@ -185,7 +186,6 @@ const UserProfile = ({ match, history }) => {
           uk-grid="true"
         >
           {invoices.map((invoice, index) => {
-            console.log(invoice.preparer, userInfo);
             return (
               <InvoiceCard
                 key={index}

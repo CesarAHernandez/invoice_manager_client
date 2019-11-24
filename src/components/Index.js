@@ -6,6 +6,7 @@ import { getRequest } from "../utils/axios";
 import IndexMain from "./IndexMain";
 import CreateInvoice from "./CreateInvoice";
 import CreateUser from "./CreateUser";
+import * as UIkit from "../resources/js/uikit.min.js";
 
 const Index = ({ history }) => {
   const userContext = useContext(UserContext);
@@ -64,10 +65,12 @@ const Index = ({ history }) => {
         >
           Log Out {userContext.user.username}
         </button>
-        <Link to="/admin/settings">
-          <i uk-icon="icon: cog"></i>
-          Settings
-        </Link>
+        {userContext.user.admin_level > 2 && (
+          <Link to="/admin/settings">
+            <i uk-icon="icon: cog"></i>
+            Settings
+          </Link>
+        )}
       </div>
       <IndexMain searchedUsers={users} history={history} />
 

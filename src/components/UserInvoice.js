@@ -7,6 +7,7 @@ const UserInvoice = () => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [invoice, setInvoice] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const _handleGoBack = () => {
     setUser(null);
@@ -16,6 +17,7 @@ const UserInvoice = () => {
 
   const _handleSubmit = async e => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (code.current.value.length === 0) {
         setError("Please Enter your code");
@@ -29,7 +31,9 @@ const UserInvoice = () => {
         return;
       }
       const [user_no, inv_no] = code.current.value.split("-");
+      console.log(user_no, inv_no);
       const response = await getRequest(`/user/${user_no}/invoice`);
+      console.log(response);
       if (response.status !== 200) {
         console.log("error", response);
         setError(
@@ -38,19 +42,34 @@ const UserInvoice = () => {
         return;
       }
       setUser(response.data.user);
-      response.data.invoices.forEach(invoice => {
-        if (invoice.inv_no === inv_no) {
-          setInvoice(invoice);
-        }
-      });
-      if (!invoice) {
+      const invoice = response.data.user[0].invoices.filter(
+        invoice => invoice.inv_no === inv_no
+      );
+      console.log("invoice", invoice);
+      // response.data.user[0].invoices.forEach(invoice => {
+      //   if (invoice.inv_no === inv_no) {
+      //     setTimeout(() => {
+      //       setLoading(false);
+      //       setInvoice(invoice);
+      //     }, 1500);
+      //   }
+      // });
+      if (invoice.length === 0) {
         setError(
           "Please check if the code is correct, if this persist try again later or call your agent"
         );
         return;
       }
+      setTimeout(() => {
+        setInvoice(invoice[0]);
+        setLoading(false);
+      }, 1500);
       console.log(response.data);
     } catch (err) {
+      setLoading(false);
+      setError(
+        "Please check if the code is correct, if this persist try again later or call your agent"
+      );
       console.log(err);
     }
   };
@@ -76,7 +95,12 @@ const UserInvoice = () => {
           placeholder="1f008b1-9ac57cb"
           name="isDiscounted"
         />
-        <button className="uk-button uk-button-primary" type="submit">
+        <button
+          className="uk-button uk-button-primary"
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? <div uk-spinner="true"></div> : "Submit"}
           Submit
         </button>
       </form>

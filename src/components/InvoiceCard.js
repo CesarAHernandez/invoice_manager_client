@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import PdfWindow from "./PdfWindow";
 
 const InvoiceCard = ({
@@ -14,6 +15,9 @@ const InvoiceCard = ({
   const _handleWindowUnload = () => {
     setViewPdf(false);
   };
+  useEffect(() => {
+    console.log(info);
+  }, []);
   return (
     <div>
       <div
@@ -26,7 +30,11 @@ const InvoiceCard = ({
         uk-grid="true"
       >
         <div className="uk-width-1-2">
-          <div className="uk-title">Number: {info.inv_no}</div>
+          <div className="uk-title">
+            <a href={`/admin/user/${info.user.user_no}`}>
+              Number: {info.inv_no}
+            </a>
+          </div>
           <div className="uk-title">Status: {info.status}</div>
           <div className="uk-title">
             Due Date: {new Date(info.due_date).toLocaleDateString()}
