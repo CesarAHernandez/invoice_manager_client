@@ -36,7 +36,44 @@ const Index = ({ history }) => {
   };
   return (
     <div>
-      <div className="uk-flex uk-flex-between">
+      <div className="uk-child-width-1-1" uk-grid="true">
+        <div className="uk-flex uk-flex-between">
+          <div className=" uk-button-group">
+            <button
+              className="uk-button uk-text-small@s uk-button-primary"
+              uk-toggle="target: #create_user_modal"
+              onClick={() => setCreateUser(true)}
+            >
+              Create User
+            </button>
+            <button
+              className="uk-button uk-text-small@s uk-button-primary"
+              uk-toggle="target: #create_invoice_modal"
+              onClick={() => setRenderInvoice(true)}
+            >
+              Create Invoice
+            </button>
+          </div>
+          <div className="uk-button-group">
+            <button
+              className="uk-button uk-button-danger uk-text-small@s"
+              onClick={() => {
+                return (
+                  //eslint-disable-next-line no-restricted-globals
+                  confirm("Are you sure") && userContext.handleLogout(history)
+                );
+              }}
+            >
+              Log Out {userContext.user.username}
+            </button>
+            {userContext.user.admin_level > 1 && (
+              <Link to="/admin/settings">
+                <i uk-icon="icon: cog"></i>
+                Settings
+              </Link>
+            )}
+          </div>
+        </div>
         <form className="uk-search uk-search-default">
           <input
             className="uk-search-input "
@@ -45,32 +82,6 @@ const Index = ({ history }) => {
             placeholder="Search..."
           />
         </form>
-        <button
-          className="uk-button uk-button-primary"
-          uk-toggle="target: #create_user_modal"
-          onClick={() => setCreateUser(true)}
-        >
-          Create User
-        </button>
-        <button
-          className="uk-button uk-button-primary"
-          uk-toggle="target: #create_invoice_modal"
-          onClick={() => setRenderInvoice(true)}
-        >
-          Create Invoice
-        </button>
-        <button
-          className="uk-button uk-button-danger"
-          onClick={() => userContext.handleLogout(history)}
-        >
-          Log Out {userContext.user.username}
-        </button>
-        {userContext.user.admin_level > 2 && (
-          <Link to="/admin/settings">
-            <i uk-icon="icon: cog"></i>
-            Settings
-          </Link>
-        )}
       </div>
       <IndexMain searchedUsers={users} history={history} />
 

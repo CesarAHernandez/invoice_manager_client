@@ -15,11 +15,17 @@ const ProtectedRoute = ({ component: Comp, loggedIn, path, ...rest }) => {
       {...rest}
       render={props => {
         return loggedIn ? (
-          <div style={mainContainer}>
-            <div style={{ alignSelf: "center" }}>
+          <div className="uk-padding" uk-grid="true">
+            <div
+              className="uk-width-1-3@m uk-width-1-4@l uk-width-1-1"
+              style={{ alignSelf: "" }}
+            >
               <SideBarMenu />
             </div>
-            <div className="uk-padding " style={{ alignSelf: "stretch" }}>
+            <div
+              className="uk-padding@m uk-width-2-3@m uk-width-3-4@l uk-width-1-1"
+              style={{ alignSelf: "stretch" }}
+            >
               <Comp {...props} />
             </div>
           </div>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
 import PdfWindow from "./PdfWindow";
 
 const InvoiceCard = ({
   info,
   sendSMS,
   sendEmail,
+  viewerInfo,
   isLoading,
   viewByAdmin,
   deleteInvoice,
@@ -31,9 +31,13 @@ const InvoiceCard = ({
       >
         <div className="uk-width-1-2">
           <div className="uk-title">
-            <a href={`/admin/user/${info.user.user_no}`}>
-              Number: {info.inv_no}
-            </a>
+            {viewerInfo.admin_level > 1 ? (
+              <a href={`/admin/user/${info.user.user_no}`}>
+                Number: {info.inv_no}
+              </a>
+            ) : (
+              <div>Number: {info.inv_no}</div>
+            )}
           </div>
           <div className="uk-title">Status: {info.status}</div>
           <div className="uk-title">
