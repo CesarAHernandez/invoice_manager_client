@@ -135,24 +135,47 @@ const UserProfile = ({ match, history }) => {
   if (userInfo) {
     return (
       <div>
-        {userContext.user.admin_level > 1 ? (
-          <div
-            className="uk-card uk-card-default uk-card-body uk-child-width-1-5"
-            uk-grid="true"
-          >
-            <div className="uk-card-title">Number</div>
-            <div className="uk-card-title">Name</div>
-            <div className="uk-card-title">Phone</div>
-            <div className="uk-card-title">Address</div>
-            <div className="uk-card-title">Admin Level</div>
+        <div
+          className={`
+            uk-card
+            uk-card-default
+            uk-card-body
+            uk-flex-center
+            uk-child-width-1-2
+            uk-child-width-1-3@m
+            uk-child-width-1-${userContext.user.admin_level > 1 ? "6" : "5"}@l
+            `}
+          uk-grid="true"
+        >
+          <div className="field uk-text-center">
+            <div className="uk-card-title uk-text-primary">Number</div>
             <div className="uk-text-top">{userInfo.user_no}</div>
+          </div>
+          <div className="field uk-text-center">
+            <div className="uk-card-title uk-text-primary">Name</div>
             <div className="uk-text-top">{userInfo.username}</div>
+          </div>
+          <div className="field uk-text-center">
+            <div className="uk-card-title uk-text-primary">Email</div>
+            <div className="uk-text-top">
+              {userInfo.email.length === 0 ? "No Email" : userInfo.email}
+            </div>
+          </div>
+          <div className="field uk-text-center">
+            <div className="uk-card-title uk-text-primary">Phone</div>
             <div className="uk-text-top">{userInfo.phone}</div>
+          </div>
+          <div className="field uk-text-center">
+            <div className="uk-card-title uk-text-primary">Address</div>
             <div className="uk-text-top">
               {userInfo.street_address} <br /> {userInfo.city}, {userInfo.state}{" "}
               {userInfo.zip}
             </div>
-            <div>
+          </div>
+
+          {userContext.user.admin_level > 1 && (
+            <div className="field uk-text-center">
+              <div className="uk-card-title uk-text-primary">Admin Level</div>
               <div className="uk-text-top">{userInfo.admin_level}</div>
               <button
                 className="uk-text-top uk-button uk-button-default"
@@ -162,47 +185,8 @@ const UserProfile = ({ match, history }) => {
                 Edit
               </button>
             </div>
-          </div>
-        ) : (
-          <div
-            className="
-            uk-card
-            uk-card-default
-            uk-card-body
-            uk-flex-center
-            uk-child-width-1-2
-            uk-child-width-1-3@m
-            uk-child-width-1-5@l
-            "
-            uk-grid="true"
-          >
-            <div className="field uk-text-center">
-              <div className="uk-card-title uk-text-primary">Number</div>
-              <div className="uk-text-top">{userInfo.user_no}</div>
-            </div>
-            <div className="field uk-text-center">
-              <div className="uk-card-title uk-text-primary">Name</div>
-              <div className="uk-text-top">{userInfo.username}</div>
-            </div>
-            <div className="field uk-text-center">
-              <div className="uk-card-title uk-text-primary">Email</div>
-              <div className="uk-text-top">
-                {userInfo.email.length === 0 ? "No Email" : userInfo.email}
-              </div>
-            </div>
-            <div className="field uk-text-center">
-              <div className="uk-card-title uk-text-primary">Phone</div>
-              <div className="uk-text-top">{userInfo.phone}</div>
-            </div>
-            <div className="field uk-text-center">
-              <div className="uk-card-title uk-text-primary">Address</div>
-              <div className="uk-text-top">
-                {userInfo.street_address} <br /> {userInfo.city},{" "}
-                {userInfo.state} {userInfo.zip}
-              </div>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
         <div
           className="uk-margin uk-child-width-1-2@m uk-child-width-1-1@s"
           uk-grid="true"

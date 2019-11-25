@@ -37,7 +37,7 @@ const SideBarMenu = () => {
       </Link>
       {userContext.user.admin_level > 1 && (
         <Link to="/admin/admins">
-          <div className="uk-card uk-card-default uk-card-small  uk-card-body uk-text-center uk-width-medium">
+          <div className="uk-card uk-card-default uk-card-small  uk-card-body uk-text-center uk-width-medium uk-margin-auto">
             Admins
           </div>
         </Link>
