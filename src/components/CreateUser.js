@@ -8,13 +8,13 @@ const CreateUser = ({ removeModal, showToast }) => {
   const userContext = useContext(UserContext);
   const [phone, setPhone] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const username = useRef(null);
   const email = useRef(null);
   const street_address = useRef(null);
   const city = useRef(null);
   const state = useRef(null);
   const [zip, setZip] = useState(0);
-  const isAdmin = useRef(null);
   const adminLevel = useRef(null);
   const password = useRef(null);
 
@@ -26,6 +26,7 @@ const CreateUser = ({ removeModal, showToast }) => {
     setLoading(true);
     try {
       e.preventDefault();
+      console.log(isAdmin);
       const response = await postRequest("/user/create", {
         username: username.current.value,
         email: email.current.value,
@@ -35,7 +36,7 @@ const CreateUser = ({ removeModal, showToast }) => {
         state: state.current.value,
         zip,
         admin_level: isAdmin ? adminLevel.current.value : 0,
-        password: password.current.value
+        password: password.current.value,
       });
 
       if (response.status === 200) {
@@ -173,8 +174,8 @@ const CreateUser = ({ removeModal, showToast }) => {
                   </label>
                   <input
                     className="uk-checkbox"
-                    ref={isAdmin}
-                    onClick={() => isAdmin.current.focus()}
+                    checked={isAdmin}
+                    onChange={e => setIsAdmin(e.target.checked)}
                     id="admin"
                     type="checkbox"
                   />
