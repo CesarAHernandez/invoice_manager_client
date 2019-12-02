@@ -26,11 +26,12 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   useEffect(() => {
     calculateTotal();
   }, [discountAmount, pricePaid]);
+
   useEffect(() => {
     setIsUpdating(true);
     setTimeout(() => {
       setIsUpdating(false);
-    }, 1);
+    }, 100);
     setTotalPrice(calculateTotal()[1]);
   }, [services]);
 
@@ -189,15 +190,27 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
             </span>
             <span className="uk-width-1-3">Price</span>
           </div>
-          <div>{isUpdating ? "Loading" : renderServices()}</div>
+          <div>
+            {isUpdating ? (
+              <div
+                style={{
+                  height: `${(services.length > 0 ? services.length : 1) *
+                    58}px`,
+                }}
+              >
+                <div uk-spinner="ratio: 2" />
+              </div>
+            ) : (
+              renderServices()
+            )}
+          </div>
           <div className="add_service uk-width-1-1">
             <span
-              className="uk-align-right"
+              className="uk-align-right fa fa-plus-square fa-lg"
               style={{ color: "green", cursor: "pointer" }}
               onClick={() => {
                 setServices([...services, { service: "", price: "", qty: 1 }]);
               }}
-              uk-icon="icon:plus-circle; ratio: 1.2"
             />
           </div>
         </div>

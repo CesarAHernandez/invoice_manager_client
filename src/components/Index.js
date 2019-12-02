@@ -68,7 +68,7 @@ const Index = ({ history }) => {
             </button>
             {userContext.user.admin_level > 1 && (
               <Link to="/admin/settings">
-                <i uk-icon="icon: cog"></i>
+                <i className="fa fa-cog"></i>
                 Settings
               </Link>
             )}

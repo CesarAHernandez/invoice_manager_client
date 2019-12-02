@@ -32,8 +32,8 @@ const ServiceField = ({
         className="remove_icon uk-flex uk-flex-column uk-flex-center"
       >
         <span
+          className="fa fa-minus-square fa-lg"
           style={{ color: "red", cursor: "pointer" }}
-          uk-icon="icon:minus-circle; ratio: 1.4"
           onClick={() => removeService(index)}
         />
       </div>
