@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PdfWindow from "./PdfWindow";
 
 const InvoiceCard = ({
@@ -15,9 +15,6 @@ const InvoiceCard = ({
   const _handleWindowUnload = () => {
     setViewPdf(false);
   };
-  useEffect(() => {
-    console.log(info);
-  }, []);
   return (
     <div>
       <div

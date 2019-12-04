@@ -1,4 +1,4 @@
-import { postRequest, getRequest } from "./axios";
+import { postRequest } from "./axios";
 
 export const sendSMS = (number, body) =>
   postRequest("/sms/send", {

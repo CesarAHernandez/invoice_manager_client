@@ -2,7 +2,7 @@ export function debounce(a, b, c) {
   var d, e;
   return function() {
     function h() {
-      //eslint-disable-next-line no-unused-expressions
+      //eslint-disable-next-line no-unused-expressions, no-sequences
       (d = null), c || (e = a.apply(f, g));
     }
     var f = this,

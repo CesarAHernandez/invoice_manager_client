@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import PaypalExpressBtn from "react-paypal-express-checkout";
 
@@ -6,7 +6,7 @@ const PaypalButton = ({ total, description, loading, complete }) => {
   // Get the env from a config file
   const client = {
     sandbox: "",
-    production: ""
+    production: "",
   };
   const env = "sandbox";
   const currency = "USD";

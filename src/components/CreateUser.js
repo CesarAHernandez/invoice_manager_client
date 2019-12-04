@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useEffect } from "react";
+import React, { useRef, useState, useContext } from "react";
 import UserContext from "./UserContext";
 import PhoneInput from "react-phone-number-input/basic-input";
 import CurrencyInput from "react-currency-input";
@@ -18,12 +18,13 @@ const CreateUser = ({ removeModal, showToast }) => {
   const adminLevel = useRef(null);
   const password = useRef(null);
 
-  useEffect(() => {
-    return () => removeModal("user");
-  }, []);
+  // useEffect(() => {
+  //   return () => removeModal("user");
+  // }, []);
 
   const _handleSubmit = async e => {
     setLoading(true);
+
     try {
       e.preventDefault();
       console.log(isAdmin);

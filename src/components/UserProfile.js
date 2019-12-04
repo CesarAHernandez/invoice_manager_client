@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import UserContext from "./UserContext";
 import InvoiceCard from "./InvoiceCard";
 import EditUser from "./EditUser";
@@ -31,7 +31,6 @@ const UserProfile = ({ match, history }) => {
           );
           invoices = response.data.invoices;
         }
-        console.log(requestInfo);
         setUserInfo(requestInfo);
         setInvoices([...(requestInfo.invoices || []), ...(invoices || [])]);
       } catch (err) {
@@ -39,8 +38,13 @@ const UserProfile = ({ match, history }) => {
       }
     };
     fetchUserInfo();
+    //TODO: Make a better way to update and fetch the data
   }, [updated]);
 
+  const _handleRemoveModal = useCallback(() => {
+    setShowEditUser(false);
+    setUpdated(updated + 1);
+  });
   const _sendEmail = async invoice => {
     try {
       if (!userInfo.email || userInfo.email.length === 0) {
@@ -106,10 +110,10 @@ const UserProfile = ({ match, history }) => {
 
     setLoading(false);
   };
-  const _handleRemove = () => {
-    setShowEditUser(false);
-    setUpdated(updated + 1);
-  };
+  // const _handleRemove = () => {
+  //   setShowEditUser(false);
+  //   setUpdated(updated + 1);
+  // };
   const _handleDeleteInvoice = async id => {
     //eslint-disable-next-line no-restricted-globals
     if (confirm("Are you sure you want to delete")) {
@@ -212,7 +216,7 @@ const UserProfile = ({ match, history }) => {
           {showEditUser && (
             <EditUser
               userInfo={userInfo}
-              removeModal={_handleRemove}
+              removeModal={_handleRemoveModal}
               showToast={_handleToast}
             />
           )}

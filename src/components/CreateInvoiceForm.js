@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+  useReducer,
+} from "react";
 import UserContext from "./UserContext";
 import numeral from "numeral";
 import Select from "react-select";
@@ -10,14 +16,10 @@ import { postRequest, getRequest } from "../utils/axios";
 // TODO: Replace payment methed with amount due and amount piad
 const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   const userContext = useContext(UserContext);
-  const [services, setServices] = useState([
-    { service: "", price: "", qty: 1 },
-  ]);
   const [pricePaid, setPricePaid] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [recepients, setRecepients] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [originalAmount, setOriginalAmount] = useState(0);
   const [isDiscounted, setIsDiscounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -26,14 +28,6 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
   useEffect(() => {
     calculateTotal();
   }, [discountAmount, pricePaid]);
-
-  useEffect(() => {
-    setIsUpdating(true);
-    setTimeout(() => {
-      setIsUpdating(false);
-    }, 100);
-    setTotalPrice(calculateTotal()[1]);
-  }, [services]);
 
   useEffect(() => {
     handleLoading(true);
@@ -60,6 +54,40 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
     };
     getAllRecepients();
   }, []);
+
+  const [services, dispatch] = useReducer(
+    (services, { type, indx, serviceInfo }) => {
+      switch (type) {
+        case "add":
+          return [...services, { service: "", price: "", qty: 1 }];
+        case "remove":
+          if (services.length === 1) {
+            return [{ service: "", price: "", qty: 1 }];
+          } else {
+            return services.filter((_, index) => index !== indx);
+          }
+        case "update":
+          // Replace a services with a new one with the updated values
+          services.splice(indx, 1, { ...serviceInfo, qty: 1 });
+          return services;
+        default:
+          console.log("default");
+          return services;
+      }
+    },
+    [{ service: "", price: "", qty: 1 }]
+  );
+  useEffect(() => {
+    console.log("Services updated", services);
+  }, [services]);
+  //When we are deleteing we have to re-render the list
+  useEffect(() => {
+    setIsUpdating(true);
+    setTimeout(() => {
+      setIsUpdating(false);
+    }, 100);
+    calculateTotal();
+  }, [services]);
   const calculateTotal = () => {
     try {
       let totalAmount = services.reduce((acc, curr) => {
@@ -96,26 +124,6 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
       console.log(err);
       return [0, 0];
     }
-  };
-  const _removeService = indxRemove => {
-    const filteredServices = services.filter((service, index) => {
-      if (index !== indxRemove) {
-        return service;
-      }
-    });
-
-    setServices(filteredServices);
-  };
-  const _updateServiceInfo = (service, price, index) => {
-    const updatedServiceInfo = {
-      service,
-      price,
-      qty: 1,
-    };
-    const _services = services;
-    _services[index] = updatedServiceInfo;
-    setServices(_services);
-    calculateTotal();
   };
   const _handleSubmit = async e => {
     try {
@@ -157,17 +165,6 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
       handleCompleted(err);
     }
   };
-  const renderServices = () =>
-    services.map((service, index) => (
-      <ServiceField
-        key={index}
-        index={index}
-        updateTotal={calculateTotal}
-        serviceInfo={service}
-        updateServiceInfo={_updateServiceInfo}
-        removeService={_removeService}
-      />
-    ));
   return (
     <form className="uk-form-stacked" onSubmit={_handleSubmit}>
       <div className="">
@@ -191,6 +188,10 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
             <span className="uk-width-1-3">Price</span>
           </div>
           <div>
+            <button type="button" onClick={() => console.log(services)}>
+              Check Services
+            </button>
+
             {isUpdating ? (
               <div
                 style={{
@@ -201,16 +202,28 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
                 <div uk-spinner="ratio: 2" />
               </div>
             ) : (
-              renderServices()
+              services.map((service, index) => (
+                <ServiceField
+                  key={index}
+                  index={index}
+                  updateTotal={calculateTotal}
+                  serviceInfo={service}
+                  updateServiceInfo={(index, serviceInfo) => {
+                    dispatch({ type: "update", indx: index, serviceInfo });
+                    calculateTotal();
+                  }}
+                  removeService={index => {
+                    dispatch({ type: "remove", indx: index });
+                  }}
+                />
+              ))
             )}
           </div>
           <div className="add_service uk-width-1-1">
             <span
               className="uk-align-right fa fa-plus-square fa-lg"
               style={{ color: "green", cursor: "pointer" }}
-              onClick={() => {
-                setServices([...services, { service: "", price: "", qty: 1 }]);
-              }}
+              onClick={() => dispatch({ type: "add" })}
             />
           </div>
         </div>

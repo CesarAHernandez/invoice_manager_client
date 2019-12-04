@@ -2,12 +2,6 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import SideBarMenu from "./SideBarMenu";
 
-const mainContainer = {
-  display: "grid",
-  gridTemplateColumns: "minmax(200px,20%) 1fr",
-  height: "100vh",
-  paddingLeft: 30,
-};
 const ProtectedRoute = ({ component: Comp, loggedIn, path, ...rest }) => {
   return (
     <Route

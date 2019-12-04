@@ -24,6 +24,7 @@ const Index = ({ history }) => {
     setUsers(results.data.users);
   }, 300);
   const _handleRemove = which => {
+    console.log("Hello", which);
     if (which === "invoice") {
       setRenderInvoice(false);
     } else {

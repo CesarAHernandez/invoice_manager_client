@@ -9,11 +9,9 @@ const IndexMain = ({ searchedUsers, history }) => {
       try {
         const allUsers = await getRequest("/users/all");
 
-        const filteredUsers = allUsers.data.users.filter(user => {
-          if (user.admin_level === 0) {
-            return user;
-          }
-        });
+        const filteredUsers = allUsers.data.users.filter(
+          user => user.admin_level === 0
+        );
         setUsers(filteredUsers);
       } catch (err) {
         console.log(err);

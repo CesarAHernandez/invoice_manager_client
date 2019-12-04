@@ -16,11 +16,8 @@ const EditUser = ({ userInfo, removeModal, showToast }) => {
   const state = useRef(null);
   const password = useRef(null);
 
-  useEffect(() => {
-    return () => {
-      removeModal();
-    };
-  }, []);
+  useEffect(() => removeModal());
+
   const _handleSubmit = async e => {
     try {
       setLoading(true);

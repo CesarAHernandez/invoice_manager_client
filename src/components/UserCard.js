@@ -16,7 +16,7 @@ const UserCard = ({ userInfo, history }) => {
           </span>
         </div>
         <div className="info uk-flex uk-flex-start uk-flex-middle">
-          <span className="fa fa-phone-alt uk-padding-small uk-padding-remove-vertical uk-padding-remove-left" />
+          <span className="fa fa-phone uk-padding-small uk-padding-remove-vertical uk-padding-remove-left"></span>
           <span className="">{userInfo.phone}</span>
         </div>
         <div className="invoiceNumber uk-flex uk-flex-start uk-flex-middle">
