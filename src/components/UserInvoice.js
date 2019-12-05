@@ -81,28 +81,52 @@ const UserInvoice = () => {
       <h1 className="uk-heading-medium uk-text-center">
         Enter the code to view your invoice
       </h1>
-      <form className="uk-form-stacked uk-text-center" onSubmit={_handleSubmit}>
+      <form
+        className="uk-form-stacked uk-text-center "
+        onSubmit={_handleSubmit}
+      >
         {error && <div>{error}</div>}
-        <label className="uk-form-label" htmlFor="code_input">
-          Code
-        </label>
-        <input
-          id="code_input"
-          className="uk-input uk-width-1-4"
-          type="text"
-          onClick={() => code.current.focus()}
-          ref={code}
-          placeholder="1f008b1-9ac57cb"
-          name="isDiscounted"
-        />
-        <button
-          className="uk-button uk-button-primary"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? <div uk-spinner="true"></div> : "Submit"}
-          Submit
-        </button>
+        <div className="uk-form-controls" uk-grid="true">
+          <div
+            className="
+          input uk-width-1-1
+          input uk-width-1-2@s
+          input uk-width-1-3@m
+          uk-align-center"
+          >
+            <label className="uk-form-label" htmlFor="code_input">
+              Code
+            </label>
+            <input
+              id="code_input"
+              className="uk-input"
+              type="text"
+              onClick={() => code.current.focus()}
+              ref={code}
+              placeholder="1f008b1-9ac57cb"
+              name="isDiscounted"
+            />
+          </div>
+          <div
+            className="
+          uk-align-center
+          uk-width-1-1"
+          >
+            <button
+              className="
+              uk-button
+              uk-button-primary
+              uk-width-1-1
+              uk-width-1-2@s
+              uk-width-1-3@m
+              "
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? <div uk-spinner="true"></div> : "Submit"}
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );

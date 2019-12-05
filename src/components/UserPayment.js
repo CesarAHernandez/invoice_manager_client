@@ -7,7 +7,7 @@ import StripeForm from "./StripeForm";
 const UserPayment = ({ invoice, user, goBack }) => {
   // TODO: Make request to server to see if this person needs to pay
   // TODO: Incoporate the download invoice button
-  const [total, setTotal] = useState(invoice.total_price);
+  const total = invoice.total_price;
   const [complete, setComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,18 +58,23 @@ const UserPayment = ({ invoice, user, goBack }) => {
           Go Back
         </button>
         <h1 className="uk-heading-small uk-text-center">Pay Here</h1>
-        <div className="uk-child-width-1-2" uk-grid="true">
-          <div>
+        <div
+          className="
+          uk-child-width-1-1
+          uk-child-width-1-2@m"
+          uk-grid="true"
+        >
+          <div className="uk-flex uk-flex-column uk-flex-center">
             <div>Invoice# {invoice.inv_no}</div>
             <div>Total: ${total}</div>
             <button
               onClick={_handleDownload}
-              className="uk-button uk-button-primary"
+              className="uk-button uk-button-primary uk-width-1-1 uk-width-1-2@s"
             >
               Download Invoice
             </button>
           </div>
-          <div className="payment">
+          <div className="payment uk-width-1-3@m uk-align-center">
             {isLoading && (
               <div className="uk-overlay-default uk-position-cover">
                 <div className="uk-position-center">
@@ -86,16 +91,19 @@ const UserPayment = ({ invoice, user, goBack }) => {
                 <div className="uk-card-title uk-text-center">Payment</div>
                 <div className="uk-text-center">
                   <div>Continue with Paypal</div>
-                  {/* <PaypalButton
+                  <PaypalButton
                     total={total}
                     description={"Some thing"}
                     complete={_handleComplete}
                     loading={_handleLoading}
-                  /> */}
+                  />
                 </div>
                 <hr className="uk-divider-icon" />
+                {/*
+
+
                 <div>Credit Card</div>
-                {/* <StripeProvider apiKey="pk_test_FakM84nEUfKPZFFI8dAEDfyf00WqcOJr8E">
+                <StripeProvider apiKey="pk_test_FakM84nEUfKPZFFI8dAEDfyf00WqcOJr8E">
                   <Elements>
                     <StripeForm
                       total={total}
@@ -104,7 +112,8 @@ const UserPayment = ({ invoice, user, goBack }) => {
                       loading={_handleLoading}
                     />
                   </Elements>
-                </StripeProvider> */}
+                </StripeProvider>
+                */}
               </div>
             )}
           </div>

@@ -156,7 +156,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
       };
 
       console.log(object);
-      const result = await postRequest("/admin/invoice/create", object);
+      await postRequest("/admin/invoice/create", object);
       handleLoading(false);
       handleCompleted(null);
     } catch (err) {
@@ -165,6 +165,7 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
       handleCompleted(err);
     }
   };
+
   return (
     <form className="uk-form-stacked" onSubmit={_handleSubmit}>
       <div className="">
@@ -188,10 +189,6 @@ const CreateInvoiceForm = ({ handleLoading, handleCompleted }) => {
             <span className="uk-width-1-3">Price</span>
           </div>
           <div>
-            <button type="button" onClick={() => console.log(services)}>
-              Check Services
-            </button>
-
             {isUpdating ? (
               <div
                 style={{

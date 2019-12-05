@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { putRequest } from "../utils/axios";
 import PhoneInput from "react-phone-number-input/basic-input";
 import CurrencyInput from "react-currency-input";
@@ -15,8 +15,6 @@ const EditUser = ({ userInfo, removeModal, showToast }) => {
   const city = useRef(null);
   const state = useRef(null);
   const password = useRef(null);
-
-  useEffect(() => removeModal());
 
   const _handleSubmit = async e => {
     try {

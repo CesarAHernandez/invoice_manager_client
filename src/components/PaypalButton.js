@@ -1,18 +1,21 @@
 import React from "react";
 
-import PaypalExpressBtn from "react-paypal-express-checkout";
+import { PayPalButton } from "react-paypal-button-v2";
+import { siteOptions } from "../config/siteOptions";
 
 const PaypalButton = ({ total, description, loading, complete }) => {
   // Get the env from a config file
   const client = {
-    sandbox: "",
-    production: "",
+    cliendId:
+      siteOptions.paypal_env === "sandbox"
+        ? siteOptions.paypal_sandbox_client_id
+        : siteOptions.paypal_production_client_id,
   };
-  const env = "sandbox";
+
   const currency = "USD";
-  const _onSuccess = payment => {
+  const _onSuccess = (details, data) => {
     // 1, 2, and ... Poof! You made it, everything's fine and dandy!
-    console.log("Payment successful!", payment);
+    console.log("Payment successful!", details, data);
     // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
     loading(false);
     complete(true);
@@ -33,14 +36,14 @@ const PaypalButton = ({ total, description, loading, complete }) => {
     loading(false);
   };
   return (
-    <PaypalExpressBtn
-      env={env}
-      client={client}
+    <PayPalButton
+      amount={total}
       currency={currency}
-      total={total}
-      onError={_onError}
-      onSuccess={_onSuccess}
-      onCancel={_onCancel}
+      shippingPreference="NO_SHIPPING"
+      onSuccess={(details, data) => _onSuccess(details, data)}
+      onCancel={data => _onCancel(data)}
+      catchError={err => _onError(err)}
+      options={client}
     />
   );
 };

@@ -26,7 +26,13 @@ const IndexMain = ({ searchedUsers, history }) => {
   return (
     <div className="uk-panel-scrollable uk-margin" style={{ height: 700 }}>
       <div
-        className="uk-child-width-1-4@m uk-child-width-1-2@s uk-grid-small uk-grid-match uk-margin"
+          className="
+          uk-child-width-1-4@l
+          uk-child-width-1-3@m
+          uk-child-width-1-2@s
+          uk-grid-small
+          uk-grid-match
+          uk-margin"
         uk-grid="true"
       >
         {users.map((user, index) => {

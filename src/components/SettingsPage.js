@@ -31,7 +31,7 @@ const SetingsPage = () => {
       },
     ];
     try {
-      const request = await postRequest("/option/update", options);
+      await postRequest("/option/update", options);
       // Slow it down
       setTimeout(() => {
         setLoading(false);

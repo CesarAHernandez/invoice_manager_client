@@ -6,6 +6,7 @@ const Home = ({ history }) => {
   const userContext = useContext(UserContext);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const email = useRef(null);
   const password = useRef(null);
 
