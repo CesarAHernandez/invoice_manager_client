@@ -1,6 +1,6 @@
 import axios from "axios";
 import { siteOptions } from "../config/siteOptions";
-axios.defaults.baseURL = siteOptions.url;
+axios.defaults.baseURL = siteOptions.url + siteOptions.api_prefix;
 // axios.defaults.baseURL = "https://invoicemanager-rem.herokuapp.com/";
 
 export const getRequest = route =>
