@@ -12,6 +12,7 @@ const UserPayment = ({ invoice, user, goBack }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    console.log("This is the invoice", invoice);
     const getStatus = async () => {
       try {
         const response = await postRequest("/admin/invoice/status", {
@@ -67,12 +68,14 @@ const UserPayment = ({ invoice, user, goBack }) => {
           <div className="uk-flex uk-flex-column uk-flex-center">
             <div>Invoice# {invoice.inv_no}</div>
             <div>Total: ${total}</div>
-            <button
+            <a
+              href={`${invoice.download_path.split(".pdf")[0]}_download.pdf`}
               onClick={_handleDownload}
+              download="invoice.pdf"
               className="uk-button uk-button-primary uk-width-1-1 uk-width-1-2@s"
             >
               Download Invoice
-            </button>
+            </a>
           </div>
           <div className="payment uk-width-1-3@m uk-align-center">
             {isLoading && (
