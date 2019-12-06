@@ -1,24 +1,49 @@
 import React from "react";
 
 import { PayPalButton } from "react-paypal-button-v2";
+import { postRequest } from "../utils/axios";
 import { siteOptions } from "../config/siteOptions";
 
-const PaypalButton = ({ total, description, loading, complete }) => {
+const PaypalButton = ({ total, description, loading, complete, invoiceId }) => {
   // Get the env from a config file
   const client = {
-    cliendId:
+    clientId:
       siteOptions.paypal_env === "sandbox"
         ? siteOptions.paypal_sandbox_client_id
         : siteOptions.paypal_production_client_id,
   };
 
   const currency = "USD";
-  const _onSuccess = (details, data) => {
+  const _onSuccess = async (details, data) => {
     // 1, 2, and ... Poof! You made it, everything's fine and dandy!
-    console.log("Payment successful!", details, data);
-    // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
-    loading(false);
-    complete(true);
+
+    try {
+      console.log("Payment successful!", details, data);
+      /**
+       * Data:
+       * {
+       *  orderID: '',
+       *  payerID: ''
+       * }
+       * Details:
+       * {
+       * }
+       *
+       */
+
+      await postRequest("/payment/charge", {
+        invoiceId,
+        paypalDetails: details,
+        paypalData: data,
+      });
+
+      // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
+      loading(false);
+      complete(true);
+    } catch (err) {
+      console.log("err", err);
+      loading(false);
+    }
   };
 
   const _onCancel = data => {

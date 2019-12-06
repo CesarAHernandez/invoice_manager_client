@@ -29,9 +29,6 @@ const UserPayment = ({ invoice, user, goBack }) => {
     getStatus();
   }, []);
 
-  // TODO: User can download their invoice
-  const _handleDownload = () => {};
-
   const _handleComplete = async isCompleted => {
     try {
       if (isCompleted) {
@@ -70,7 +67,6 @@ const UserPayment = ({ invoice, user, goBack }) => {
             <div>Total: ${total}</div>
             <a
               href={`${invoice.download_path.split(".pdf")[0]}_download.pdf`}
-              onClick={_handleDownload}
               download="invoice.pdf"
               className="uk-button uk-button-primary uk-width-1-1 uk-width-1-2@s"
             >
@@ -99,6 +95,7 @@ const UserPayment = ({ invoice, user, goBack }) => {
                     description={"Some thing"}
                     complete={_handleComplete}
                     loading={_handleLoading}
+                    invoiceId={invoice.inv_no}
                   />
                 </div>
                 <hr className="uk-divider-icon" />

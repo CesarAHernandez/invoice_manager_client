@@ -28,7 +28,7 @@ const InvoiceCard = ({
       >
         <div className="uk-width-1-2">
           <div className="uk-title">
-            {viewerInfo.admin_level > 1 ? (
+            {viewerInfo.user.admin_level > 1 ? (
               <a href={`/admin/user/${info.user.user_no}`}>
                 Number: {info.inv_no}
               </a>

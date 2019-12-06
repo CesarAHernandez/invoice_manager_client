@@ -8,6 +8,7 @@ import Admins from "./components/Admins";
 import UserProfile from "./components/UserProfile";
 import UserInvoice from "./components/UserInvoice";
 import SettingsPage from "./components/SettingsPage";
+import ErrorPage from "./components/ErrorPage";
 
 export const routes = [
   {
@@ -55,5 +56,8 @@ export const routes = [
     path: "/admin/user/:id",
     protected: true,
     render: props => <UserProfile {...props} />,
+  },
+  {
+    render: props => <ErrorPage {...props} />,
   },
 ];
