@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { StripeProvider, Elements } from "react-stripe-elements";
+import React, { useState, useEffect, useContext } from "react";
 import { postRequest } from "../utils/axios";
 import PaypalButton from "./PaypalButton";
-import StripeForm from "./StripeForm";
 
 const UserPayment = ({ invoice, user, goBack }) => {
   // TODO: Make request to server to see if this person needs to pay
@@ -12,7 +10,6 @@ const UserPayment = ({ invoice, user, goBack }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("This is the invoice", invoice);
     const getStatus = async () => {
       try {
         const response = await postRequest("/admin/invoice/status", {
@@ -32,13 +29,11 @@ const UserPayment = ({ invoice, user, goBack }) => {
   const _handleComplete = async isCompleted => {
     try {
       if (isCompleted) {
-        const response = await postRequest("/admin/invoice/update-status", {
-          inv_no: invoice.inv_no,
-          status: "paid",
-        });
-        if (response.status === 200) {
-          setComplete(isCompleted);
-        }
+        // const response = await postRequest("/admin/invoice/update-status", {
+        //   inv_no: invoice.inv_no,
+        //   status: "paid",
+        // });
+        setComplete(isCompleted);
       }
     } catch (err) {
       console.log(err);

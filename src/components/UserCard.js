@@ -3,7 +3,7 @@ const UserCard = ({ userInfo, history }) => {
   return (
     <div
       style={{ cursor: "pointer" }}
-      onClick={e => history.push(`/admin/user/${userInfo.user_no}`)}
+      onClick={() => history.push(`/admin/user/${userInfo.user_no}`)}
     >
       <div className="uk-card uk-card-default uk-card-body">
         <div className="user uk-flex uk-flex-start uk-flex-middle">
