@@ -21,7 +21,7 @@ const UserProfile = ({ match, history }) => {
         const request = await getRequest(`user/${match.params.id}/invoice`);
         const requestInfo = request.data.user[0];
         let invoices = [];
-        if (userContext.user.admin_level > 1 && requestInfo.admin_level > 1) {
+        if (userContext.user.admin_level > 1 && requestInfo.admin_level >= 1) {
           const response = await postRequest(
             "/admin/invoice/preparer/invoices",
             {
