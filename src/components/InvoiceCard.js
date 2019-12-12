@@ -11,6 +11,18 @@ const InvoiceCard = ({
   deleteInvoice,
 }) => {
   const [viewPdf, setViewPdf] = useState(false);
+  /**
+   * Calculates the number of days since the given date
+   * 8.64e7 is the number of miliseconds in a single day
+   *
+   * @param {dateString} date The date that you want to get the number of days since
+   */
+  const calculateLastSinceCommunication = date => {
+    const today = new Date();
+    const dateSince = new Date(date);
+
+    return Math.floor((today - dateSince) / 8.64e7);
+  };
 
   const _handleWindowUnload = () => {
     setViewPdf(false);
@@ -48,14 +60,37 @@ const InvoiceCard = ({
             onClick={() => sendSMS(info)}
             disabled={isLoading}
           >
-            Send Text
+            Send Text{" "}
+            {info.last_text_sent ? (
+              <span className="uk-text-primary">
+                {calculateLastSinceCommunication(info.last_text_sent) === 0
+                  ? "Today"
+                  : `${calculateLastSinceCommunication(
+                      info.last_text_sent
+                    )} Days`}
+              </span>
+            ) : (
+              <span className="uk-text-muted uk-text-bold">Never</span>
+            )}
           </button>
+
           <button
             className="uk-button uk-button-default"
             onClick={() => sendEmail(info)}
             disabled={isLoading}
           >
-            Send Email
+            Send Email{" "}
+            {info.last_email_sent ? (
+              <span className="uk-text-primary">
+                {calculateLastSinceCommunication(info.last_email_sent) === 0
+                  ? "Today"
+                  : `${calculateLastSinceCommunication(
+                      info.last_email_sent
+                    )} Days`}
+              </span>
+            ) : (
+              <span className="uk-text-muted uk-text-bold">Never</span>
+            )}
           </button>
           <button
             className="uk-button uk-button-default"
@@ -64,13 +99,15 @@ const InvoiceCard = ({
           >
             View Invoice
           </button>
-          <button
-            className="uk-button uk-button-danger"
-            onClick={() => deleteInvoice(info.id)}
-            disabled={isLoading}
-          >
-            Delete
-          </button>
+          {viewerInfo.user.admin_level > 1 && (
+            <button
+              className="uk-button uk-button-danger"
+              onClick={() => deleteInvoice(info.id)}
+              disabled={isLoading}
+            >
+              Delete
+            </button>
+          )}
         </div>
       </div>
 

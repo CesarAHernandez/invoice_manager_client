@@ -67,12 +67,12 @@ const Index = ({ history }) => {
             >
               Log Out {userContext.user.username}
             </button>
-            {userContext.user.admin_level > 1 && (
+            {/*userContext.user.admin_level > 1 && (
               <Link to="/admin/settings">
                 <i className="fa fa-cog"></i>
                 Settings
               </Link>
-            )}
+            )*/}
           </div>
         </div>
         <form className="uk-search uk-search-default">

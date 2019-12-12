@@ -3,7 +3,6 @@ import UserContext from "./UserContext";
 import InvoiceCard from "./InvoiceCard";
 import EditUser from "./EditUser";
 import { getRequest, postRequest, deleteRequest } from "../utils/axios";
-import { sendSMS, sendEmail } from "../utils/communication";
 import { siteOptions } from "../config/siteOptions";
 import * as UIkit from "../resources/js/uikit.min.js";
 
@@ -47,15 +46,15 @@ const UserProfile = ({ match, history }) => {
   });
   const _sendEmail = async invoice => {
     try {
+      setLoading(true);
       if (!userInfo.email || userInfo.email.length === 0) {
         throw new Error("This user doesn't have an email");
       }
-      console.log(invoice);
-      await sendEmail(
-        userInfo.email || "",
-        "You invoice is ready to be viewed",
-        "basic",
-        {
+      await postRequest("/user/send-email", {
+        to: userInfo.email || "",
+        subject: "You invoice is ready to be viewed",
+        template: "basic",
+        templateObject: {
           name: userInfo.username,
           body: `You can now view your invoice at ${siteOptions.url}/user/invoice/view.
           Invoice Number: #${invoice.inv_no}
@@ -65,20 +64,24 @@ const UserProfile = ({ match, history }) => {
 
           This is an automated email. Please do not reply to this email.
         `,
-        }
-      );
-
+        },
+        inv_no: invoice.inv_no,
+      });
       //eslint-disable-next-line no-undef
       UIkit.notification({ message: "Email Sent", status: "success" });
-      // UIkit.notification({ message: "Email Sent", status: "success" });
+      setUpdated(updated + 1);
     } catch (error) {
       try {
         //eslint-disable-next-line no-undef
-        // UIkit.notification({ message: error.message, status: "warning" });
+        UIkit.notification({
+          message: "Error: Email not sent",
+          status: "warning",
+        });
       } catch (err) {
         console.log(err);
       }
     }
+    setLoading(false);
   };
 
   const _sendSMS = async invoice => {
@@ -96,13 +99,21 @@ const UserProfile = ({ match, history }) => {
 
       Please do not reply to this number.`;
 
-      await sendSMS(userInfo.phone, body);
+      await postRequest("/sms/send", {
+        number: userInfo.phone,
+        body,
+        inv_no: invoice.inv_no,
+      });
       //eslint-disable-next-line no-undef
       UIkit.notification({ message: "Text message sent", status: "success" });
+      setUpdated(updated + 1);
     } catch (err) {
       try {
         //eslint-disable-next-line no-undef
-        UIkit.notification({ message: err.message, status: "warning" });
+        UIkit.notification({
+          message: "Error: Text message did not send",
+          status: "warning",
+        });
       } catch (err) {
         console.log(err);
       }

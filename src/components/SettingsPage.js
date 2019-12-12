@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { getRequest, postRequest } from "../utils/axios";
 
-const SetingsPage = () => {
+const SetingsPage = ({ history }) => {
   const [SMTPEmail, setSMTPEmail] = useState();
   const [twilioPhone, setTwilioPhone] = useState();
   const [loading, setLoading] = useState(true);
 
   const fetchOptions = async () => {
-    const request = await getRequest("/option/all");
-    const settings = request.data.settingResponse;
-    setSMTPEmail(settings.SMTPEmail);
-    setTwilioPhone(settings.twilioPhone);
-    setLoading(false);
+    try {
+      const request = await getRequest("/option/all");
+      const settings = request.data.settingResponse;
+      setSMTPEmail(settings.SMTPEmail);
+      setTwilioPhone(settings.twilioPhone);
+      setLoading(false);
+    } catch (err) {
+      history.replace("/404");
+    }
   };
   useEffect(() => {
     fetchOptions();
@@ -47,7 +51,7 @@ const SetingsPage = () => {
 
   return (
     <div>
-      <h2>Settings Page</h2>
+      <h2>Settings Page (Work in Progress)</h2>
 
       <div className="uk-child-width-1-3" ukgrid="true">
         <div className="input">
