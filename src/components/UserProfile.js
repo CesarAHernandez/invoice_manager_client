@@ -129,7 +129,11 @@ const UserProfile = ({ match, history }) => {
     //eslint-disable-next-line no-restricted-globals
     if (confirm("Are you sure you want to delete")) {
       try {
-        await deleteRequest(`admin/invoice/${id}/delete`);
+        // await deleteRequest(`admin/invoice/${id}/delete`);
+        await postRequest("admin/invoice/remove", {
+          id,
+          user_id: userContext.user.id,
+        });
         UIkit.notification({
           message: "Invoice successfully deleted",
           status: "success",
