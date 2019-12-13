@@ -14,6 +14,7 @@ const Home = ({ history }) => {
     try {
       e.preventDefault();
 
+      setError(null);
       setLoading(true);
       const response = await postRequest("/user/login", {
         email: email.current.value,
@@ -28,10 +29,6 @@ const Home = ({ history }) => {
           setError("User does not exist");
           setLoading(false);
           break;
-        case 401:
-          setError("Invalid password");
-          setLoading(false);
-          break;
         default:
           setError("Invalid password");
           setLoading(false);
@@ -39,6 +36,7 @@ const Home = ({ history }) => {
       }
     } catch (err) {
       console.log("err", err);
+      setError("Invalid Username or Password");
     }
     setLoading(false);
   };
